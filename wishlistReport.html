@@ -1,0 +1,838 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Wishlist Comparison Report</title>
+        <style>
+            :root {
+                --primary-color: #2c3e50;
+                --secondary-color: #3498db;
+                --background-color: #f8f9fa;
+            }
+
+            body {
+                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+                line-height: 1.6;
+                margin: 0;
+                padding: 2rem;
+                background-color: var(--background-color);
+                color: var(--primary-color);
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background: white;
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            }
+
+            h1 {
+                color: var(--secondary-color);
+                border-bottom: 3px solid var(--secondary-color);
+                padding-bottom: 0.5rem;
+                margin-bottom: 2rem;
+            }
+
+            h2 {
+                color: var(--primary-color);
+                margin-top: 2rem;
+                padding-left: 0.5rem;
+                border-left: 4px solid var(--secondary-color);
+            }
+
+            .stats {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .stat-box {
+                padding: 1rem;
+                background: var(--background-color);
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            .stat-box h3 {
+                margin: 0 0 0.5rem;
+                color: var(--secondary-color);
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1rem 0;
+                background: white;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 1px 10px rgba(0,0,0,0.05);
+            }
+
+            th, td {
+                padding: 12px 15px;
+                text-align: left;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            th {
+                background-color: var(--secondary-color);
+                color: white;
+                font-weight: 600;
+            }
+
+            tr:hover {
+                background-color: #f5f5f5;
+            }
+
+            .no-items {
+                color: #666;
+                font-style: italic;
+                padding: 1rem;
+                background: #f8f9fa;
+                border-radius: 8px;
+                margin: 1rem 0;
+            }
+
+            .toc {
+              margin-bottom: 2rem; 
+              padding-left: 1rem; 
+              border-left: 4px solid var(--secondary-color); 
+              background-color:#eef7fe; 
+              padding-top:.5em; 
+              padding-bottom:.5em
+          }
+          a.toc-link{
+          text-decoration:none;color:black;}
+          </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🎮 Wishlist Comparison Report</h1>
+
+            <!-- Stats Section -->
+            <div class="stats">
+                <div class="stat-box">
+                    <h3><a class="toc-link" href="#shared-games">Shared Games</a></h3>
+                    <div class="stat-value">82</div>
+                </div>
+                <div class="stat-box">
+                    <h3><a class="toc-link" href="#backloggd-needed">Backloggd Needed</a></h3>
+                    <div class="stat-value">26</div>
+                </div>
+                <div class="stat-box">
+                    <h3><a class="toc-link" href="#steam-needed">Steam Needed</a></h3>
+                    <div class="stat-value">57</div>
+                </div>
+            </div>
+
+            <!-- Sections -->
+            
+            <!-- Shared Games Section -->
+            <h2 id="shared-games">🎯 Already on Both Platforms</h2>
+            
+    <table>
+        <thead>
+            <tr>
+                <th>Game Title</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        <tr>
+            <td>🎮 dotage</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 granblue fantasy relink</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 tactical breach wizards</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 timberborn</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 starminer</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 hades ii</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 ufo 50</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 wayfinder</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 dune awakening</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 enshrouded</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 library of ruina</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 dyson sphere program</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 indika</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 viewfinder</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 cataclismo</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 phoenotopia awakening</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 the outer worlds 2</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 the gnorp apologue</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 shadow gambit the cursed crew</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 worship</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 killer bean</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 replaced</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 the matchless kungfu</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 brutal orchestra</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 macabre</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 arc raiders</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 den of wolves</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 morbid metal</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 shin megami tensei v vengeance</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 worldless</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 demonschool</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 light odyssey</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 south of midnight</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 mafia the old country</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 ghost trick phantom detective</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 nexus 5x</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 escape from ever after</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 lorelei and the laser eyes</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 live a live</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 rotwood</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 pony island 2 panda circus</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 resident evil 4</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 rift of the necrodancer</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 threads of time</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 phantom hellcat</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 fields of mistria</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 discounty</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 wuchang fallen feathers</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 aethermancer</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 knights in tight spaces</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 black myth wukong</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 wild tactics</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 steamworld heist ii</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 sunderfolk</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 neva</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 clockwork revolution</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 new arc line</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 mouthwashing</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 diceomancer</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 nova hearts</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 sonic x shadow generations</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 dispatch</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 cuffbust</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 elden ring nightreign</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 onimusha way of the sword</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 the first berserker khazan</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 battle aces</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 path of exile 2</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 usual june</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 light no fire</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 star birds</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 prince of persia the lost crown</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 elden ring shadow of the erdtree</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 screenbound</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 the relic first guardian</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 buckshot roulette</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 alzara radiant echoes</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 streets of fortuna</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 generation exile</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 lynked banner of the spark</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 stage fright</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 crimson desert</td>
+        </tr>
+    
+        </tbody>
+    </table>
+            
+            <!-- Backloggd Needed Section -->
+            <h2 id="backloggd-needed">📥 Add to Backloggd Wishlist</h2>
+            
+    <table>
+        <thead>
+            <tr>
+                <th>Game Title</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        <tr>
+            <td>🎮 project zomboid</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 caves of qud</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 halflife alyx</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 dwarf fortress</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 songs of syx</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 necesse</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 shadow of the road</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 state of decay 3</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 deadlock</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 wartales</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 the plucky squire</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 the case of the golden idol</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 sworn</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 nine sols</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 reus 2</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 windblown</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 grit and valor  1949</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 blud</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 slay the princess  the pristine cut</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 tales of kenzera zau</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 balatro</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 metal gear solid  snake eater</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 slay the spire 2</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 solasta ii</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 liars bar</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 slice  dice</td>
+        </tr>
+    
+        </tbody>
+    </table>
+            
+            <!-- Steam Needed Section -->
+            <h2 id="steam-needed">📤 Add to Steam Wishlist</h2>
+            
+    <table>
+        <thead>
+            <tr>
+                <th>Game Title</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        <tr>
+            <td>🎮 age of wonders 4</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 akimbot</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 alan wake ii</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 alan wake ii night springs</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 assassins creed shadows</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 avowed</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 the awakener risen</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 bitcraft</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 the blood of dawnwalker</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 number blud</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 castle crashers painter boss paradise</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 clair obscur expedition 33</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 drova forsaken kin</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 the elder scrolls vi</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 exodus</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 expelled</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 fable</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 final fantasy tactics the war of the lions</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 final fantasy vii rebirth</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 ghost of yotei</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 grit and valor 1949</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 half life alyx</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 horizon forbidden west burning shores</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 intergalactic the heretic prophet</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 judas</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 kemuri</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 kingdom hearts iii re mind</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 last sentinel</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 little devil inside</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 lysfanga the time shift warrior</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 marvels wolverine</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 masters of albion</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 metal gear solid delta snake eater</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 mighty morphin power rangers</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 monster hunter wilds</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 monument valley iii</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 ninja gaiden 4</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 paper mario the thousand year door</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 perfect dark</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 phantom blade 0</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 pragmata</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 promise mascot agency</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 revenge of the savage planet</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 rise of the ronin</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 slay the princess</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 slay the spire ii</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 sleight of hand</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 slice and dice</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 stellar blade</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 strayed lights</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 super mario bros wonder</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 super mario odyssey</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 unknown 9 awakening</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 wanderstop</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 where winds meet</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 witchbrook</td>
+        </tr>
+    
+        <tr>
+            <td>🎮 the witcher iv</td>
+        </tr>
+    
+        </tbody>
+    </table>
+        </div>
+    </body>
+    </html>

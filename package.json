@@ -1,0 +1,28 @@
+{
+  "name": "backloggdsteamplugin---blsp",
+  "version": "1.0.0",
+  "description": "Steam plugin that syncs the user's BackLoggd wishlist with Steam.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-bl-api": "nodemon ./api/BackLoggd-API/src/app.ts",
+    "sleep": "node -e \"setTimeout(() => process.exit(0), 1500)\"",
+    "start": "concurrently \"npm run start-bl-api\" \"npm run sleep && nodemon --env-file=.env index.js\"",
+    "pup": "npx puppeteer install chrome && node ./utils/steamHandler.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "cheerio": "^1.0.0-rc.12",
+    "concurrently": "^8.2.2",
+    "dotenv": "^16.4.7",
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4",
+    "puppeteer": "^22.15.0",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21"
+  }
+}
