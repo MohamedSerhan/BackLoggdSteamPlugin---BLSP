@@ -6,109 +6,48 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Wishlist Comparison Report</title>
         <style>
-            :root {
-                --primary-color: #2c3e50;
-                --secondary-color: #3498db;
-                --background-color: #f8f9fa;
-            }
+            :root { --primary-color: #2c3e50; --secondary-color: #3498db; --background-color: #f8f9fa; }
+            body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; line-height: 1.6; margin: 0; padding: 2rem; background-color: var(--background-color); color: var(--primary-color); }
+            .container { max-width: 1200px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 15px rgba(0,0,0,0.1); }
+            h1 { color: var(--secondary-color); border-bottom: 3px solid var(--secondary-color); padding-bottom: 0.5rem; margin-bottom: 2rem; }
+            h2 { color: var(--primary-color); margin-top: 2rem; padding-left: 0.5rem; border-left: 4px solid var(--secondary-color); }
+            .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+            .stat-box { padding: 1rem; background: var(--background-color); border-radius: 8px; text-align: center; }
+            .stat-box h3 { margin: 0 0 0.5rem; color: var(--secondary-color); }
+            table { width: 100%; border-collapse: collapse; margin: 1rem 0; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 10px rgba(0,0,0,0.05); }
+            th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+            th { background-color: var(--secondary-color); color: white; font-weight: 600; }
+            tr:hover { background-color: #f5f5f5; }
+            .no-items { color: #666; font-style: italic; padding: 1rem; background: #f8f9fa; border-radius: 8px; margin: 1rem 0; }
+        </style>
+        <script>
+            const steamAppIds = ["1843540","2457220","692850","1903340","489830","412020","1651560","2552450","2816870","1340990","1477940"];
+            let tabCounter = 0;
 
-            body {
-                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-                line-height: 1.6;
-                margin: 0;
-                padding: 2rem;
-                background-color: var(--background-color);
-                color: var(--primary-color);
-            }
+            function addAllToSteam() {
+                if (!steamAppIds?.length) {
+                    alert('No Steam games to add!');
+                    return;
+                }
 
-            .container {
-                max-width: 1200px;
-                margin: 0 auto;
-                background: white;
-                padding: 2rem;
-                border-radius: 10px;
-                box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-            }
+                const confirmed = confirm(`This will open ${steamAppIds.length} Steam store pages. Continue?`);
+                if (!confirmed) return;
 
-            h1 {
-                color: var(--secondary-color);
-                border-bottom: 3px solid var(--secondary-color);
-                padding-bottom: 0.5rem;
-                margin-bottom: 2rem;
+                // Batch openings with increasing delays
+                steamAppIds.forEach((appId, index) => {
+                    console.log('opening link for: ', appId);
+                    setTimeout(() => {
+                        const tab = window.open(
+                            `https://store.steampowered.com/app/${appId}`,
+                            `steamTab-${tabCounter++}`
+                        );
+                        if (!tab || tab.closed) {
+                            console.error('Popup blocked! Enable popups for this site.');
+                        }
+                    }, index * 300); // 300ms delay between openings
+                });
             }
-
-            h2 {
-                color: var(--primary-color);
-                margin-top: 2rem;
-                padding-left: 0.5rem;
-                border-left: 4px solid var(--secondary-color);
-            }
-
-            .stats {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 1rem;
-                margin-bottom: 2rem;
-            }
-
-            .stat-box {
-                padding: 1rem;
-                background: var(--background-color);
-                border-radius: 8px;
-                text-align: center;
-            }
-
-            .stat-box h3 {
-                margin: 0 0 0.5rem;
-                color: var(--secondary-color);
-            }
-
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 1rem 0;
-                background: white;
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 1px 10px rgba(0,0,0,0.05);
-            }
-
-            th, td {
-                padding: 12px 15px;
-                text-align: left;
-                border-bottom: 1px solid #e0e0e0;
-            }
-
-            th {
-                background-color: var(--secondary-color);
-                color: white;
-                font-weight: 600;
-            }
-
-            tr:hover {
-                background-color: #f5f5f5;
-            }
-
-            .no-items {
-                color: #666;
-                font-style: italic;
-                padding: 1rem;
-                background: #f8f9fa;
-                border-radius: 8px;
-                margin: 1rem 0;
-            }
-
-            .toc {
-              margin-bottom: 2rem; 
-              padding-left: 1rem; 
-              border-left: 4px solid var(--secondary-color); 
-              background-color:#eef7fe; 
-              padding-top:.5em; 
-              padding-bottom:.5em
-          }
-          a.toc-link{
-          text-decoration:none;color:black;}
-          </style>
+        </script>
     </head>
     <body>
         <div class="container">
@@ -117,16 +56,16 @@
             <!-- Stats Section -->
             <div class="stats">
                 <div class="stat-box">
-                    <h3><a class="toc-link" href="#shared-games">Shared Games</a></h3>
-                    <div class="stat-value">82</div>
+                    <h3><a href="#shared-games">Shared Games</a></h3>
+                    <div class="stat-value">125</div>
                 </div>
                 <div class="stat-box">
-                    <h3><a class="toc-link" href="#backloggd-needed">Backloggd Needed</a></h3>
-                    <div class="stat-value">26</div>
+                    <h3><a href="#backloggd-needed">Backloggd Needed</a></h3>
+                    <div class="stat-value">0</div>
                 </div>
                 <div class="stat-box">
-                    <h3><a class="toc-link" href="#steam-needed">Steam Needed</a></h3>
-                    <div class="stat-value">57</div>
+                    <h3><a href="#steam-needed">Steam Needed</a></h3>
+                    <div class="stat-value">11</div>
                 </div>
             </div>
 
@@ -137,701 +76,1251 @@
             
     <table>
         <thead>
-            <tr>
-                <th>Game Title</th>
-            </tr>
+            <tr><th>Game Title</th></tr>
         </thead>
         <tbody>
-            
         <tr>
-            <td>🎮 dotage</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 granblue fantasy relink</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 tactical breach wizards</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 timberborn</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 starminer</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 hades ii</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 ufo 50</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 wayfinder</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 dune awakening</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 enshrouded</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 library of ruina</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 dyson sphere program</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 indika</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 viewfinder</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 cataclismo</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 phoenotopia awakening</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 the outer worlds 2</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 the gnorp apologue</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 shadow gambit the cursed crew</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 worship</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 killer bean</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 replaced</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 the matchless kungfu</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 brutal orchestra</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 macabre</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 arc raiders</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 den of wolves</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 morbid metal</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 shin megami tensei v vengeance</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 worldless</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 demonschool</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 light odyssey</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 south of midnight</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 mafia the old country</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 ghost trick phantom detective</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 nexus 5x</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 escape from ever after</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 lorelei and the laser eyes</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 live a live</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 rotwood</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 pony island 2 panda circus</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 resident evil 4</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 rift of the necrodancer</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 threads of time</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 phantom hellcat</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 fields of mistria</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 discounty</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 wuchang fallen feathers</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 aethermancer</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 knights in tight spaces</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 black myth wukong</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 wild tactics</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 steamworld heist ii</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 sunderfolk</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 neva</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 clockwork revolution</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 new arc line</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 mouthwashing</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 diceomancer</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 nova hearts</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 sonic x shadow generations</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 dispatch</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 cuffbust</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 elden ring nightreign</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 onimusha way of the sword</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 the first berserker khazan</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 battle aces</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 path of exile 2</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 usual june</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 light no fire</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 star birds</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 prince of persia the lost crown</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 elden ring shadow of the erdtree</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 screenbound</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 the relic first guardian</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 buckshot roulette</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 alzara radiant echoes</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 streets of fortuna</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 generation exile</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 lynked banner of the spark</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 stage fright</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 crimson desert</td>
-        </tr>
-    
-        </tbody>
+            <td>🎮 <a href="https://store.steampowered.com/app/108600" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Project Zomboid
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/333640" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Caves of Qud
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/546560" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Half-Life: Alyx
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/638510" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     dotAGE
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/881020" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Granblue Fantasy: Relink
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/975370" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Dwarf Fortress
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1043810" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Tactical Breach Wizards
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1062090" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Timberborn
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1116050" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Starminer
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1145350" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Hades II
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1147860" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     UFO 50
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1162750" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Songs of Syx
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/3159330" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Assassin’s Creed Shadows
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1171690" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Wayfinder
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1172710" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Dune: Awakening
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1173980" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Shadow of the Road
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1203620" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Enshrouded
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1256670" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Library Of Ruina
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1340720" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     State of Decay 3
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1366540" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Dyson Sphere Program
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1373960" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     INDIKA
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1382070" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Viewfinder
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1422440" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Cataclismo
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1669000" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Age of Wonders 4
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1436590" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Phoenotopia: Awakening
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1449110" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     The Outer Worlds 2
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1473350" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     (the) Gnorp Apologue
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1527950" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Wartales
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1545560" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Shadow Gambit: The Cursed Crew
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1548180" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Worship
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1597080" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Killer Bean
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1627570" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     The Plucky Squire
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1663850" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     REPLACED
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1677770" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     The Case of the Golden Idol
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1696440" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     The Matchless Kungfu
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1734320" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Brutal Orchestra
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1763250" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     SWORN
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1794830" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Macabre
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1808500" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     ARC Raiders
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1809540" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Nine Sols
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1818140" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Den of Wolves
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1866130" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Morbid Metal
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1875060" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Reus 2
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1875830" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Shin Megami Tensei V: Vengeance
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1898500" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Worldless
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1900250" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Demonschool
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1902860" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Light Odyssey
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1911610" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Windblown
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1911860" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Grit and Valor - 1949
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1921480" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     #BLUD
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1934570" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     South of Midnight
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1941540" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Mafia: The Old Country
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1967430" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Ghost Trick: Phantom Detective
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1983990" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Nexus 5X
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1989270" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Slay the Princess — The Pristine Cut
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1996390" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Escape from Ever After
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2008920" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Lorelei and the Laser Eyes
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2014380" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     LIVE A LIVE
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2015270" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Rotwood
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2017940" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Pony Island 2: Panda Circus
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2050650" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Resident Evil 4
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2073250" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Rift of the NecroDancer
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2090210" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Threads of Time
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2106730" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Phantom Hellcat
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2142790" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Fields of Mistria
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2274620" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Discounty
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2277560" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     WUCHANG: Fallen Feathers
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2288470" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Aethermancer
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2315400" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Knights in Tight Spaces
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2316580" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Tales of Kenzera™: ZAU
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2358720" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Black Myth: Wukong
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2384640" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     WILD Tactics
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2396240" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     SteamWorld Heist II
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2414270" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Sunderfolk
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2417610" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     METAL GEAR SOLID Δ: SNAKE EATER
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2420660" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Neva
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2439280" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Clockwork Revolution
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2458310" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     New Arc Line
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2475490" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Mouthwashing
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2501600" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     DICEOMANCER
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2506290" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Nova Hearts
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2513280" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     SONIC X SHADOW GENERATIONS
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2592160" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Dispatch
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2592220" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     CUFFBUST
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2622380" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     ELDEN RING NIGHTREIGN
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2638890" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Onimusha: Way of the Sword
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2680010" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     The First Berserker: Khazan
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2682180" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Battle Aces
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2694490" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Path of Exile 2
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2702430" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Usual June
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2719590" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Light No Fire
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2719750" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Star Birds
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2751000" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Prince of Persia The Lost Crown
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2778580" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     ELDEN RING Shadow of the Erdtree
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2805070" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Screenbound
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2827820" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     The Relic: First Guardian
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2835570" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Buckshot Roulette
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2856410" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     ALZARA Radiant Echoes
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2868840" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Slay the Spire 2
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2946850" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Streets of Fortuna
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2963240" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Generation Exile
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2975950" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Solasta II
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/3097560" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Liar's Bar
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/3159570" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Lynked: Banner of the Spark
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/3260750" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Stage Fright
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/3321460" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Crimson Desert
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1775490" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Slice & Dice
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/3454650" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     BitCraft Online
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2963890" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Expelled!
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2909400" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     FINAL FANTASY VII REBIRTH
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/388860" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Judas
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2161620" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Lysfanga: The Time Shift Warrior
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/3165650" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Masters of Albion
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2246340" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Monster Hunter Wilds
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/3132930" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Monument Valley 3
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2627260" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     NINJA GAIDEN 4
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2986410" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Perfect Dark
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2585830" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Promise Mascot Agency
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2787320" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Revenge of the Savage Planet
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2857810" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Sleight of Hand
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/3489700" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Stellar Blade™
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/2162020" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Strayed Lights
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1299460" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Wanderstop
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1846700" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Witchbrook
+                   </a>
+            </td>
+        </tr>
+        <tr>
+            <td>🎮 <a href="https://store.steampowered.com/app/1585180" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Drova - Forsaken Kin
+                   </a>
+            </td>
+        </tr></tbody>
     </table>
-            
+
             <!-- Backloggd Needed Section -->
             <h2 id="backloggd-needed">📥 Add to Backloggd Wishlist</h2>
-            
-    <table>
-        <thead>
-            <tr>
-                <th>Game Title</th>
-            </tr>
-        </thead>
-        <tbody>
-            
-        <tr>
-            <td>🎮 project zomboid</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 caves of qud</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 halflife alyx</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 dwarf fortress</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 songs of syx</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 necesse</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 shadow of the road</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 state of decay 3</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 deadlock</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 wartales</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 the plucky squire</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 the case of the golden idol</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 sworn</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 nine sols</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 reus 2</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 windblown</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 grit and valor  1949</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 blud</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 slay the princess  the pristine cut</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 tales of kenzera zau</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 balatro</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 metal gear solid  snake eater</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 slay the spire 2</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 solasta ii</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 liars bar</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 slice  dice</td>
-        </tr>
-    
-        </tbody>
-    </table>
-            
+            <div class="no-items">No games found in this category</div>
+
             <!-- Steam Needed Section -->
-            <h2 id="steam-needed">📤 Add to Steam Wishlist</h2>
+            <h2 id="steam-needed">📤 Add to Steam Wishlist 
+                <button onclick="addAllToSteam()" style="margin-left:15px;padding:8px;background:#1b2838;color:white;border:none;border-radius:4px;">
+                    ➕ Add All (11)
+                </button>
+            </h2>
             
     <table>
         <thead>
-            <tr>
-                <th>Game Title</th>
-            </tr>
+            <tr><th>Game Title</th></tr>
         </thead>
         <tbody>
-            
         <tr>
-            <td>🎮 age of wonders 4</td>
+            <td>🎮 <a href="https://store.steampowered.com/app/1843540" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Akimbot
+                   </a>
+            </td>
         </tr>
-    
         <tr>
-            <td>🎮 akimbot</td>
+            <td>🎮 <a href="https://store.steampowered.com/app/2457220" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Avowed
+                   </a>
+            </td>
         </tr>
-    
         <tr>
-            <td>🎮 alan wake ii</td>
+            <td>🎮 <a href="https://store.steampowered.com/app/692850" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     The Blood Of Dawnwalker
+                   </a>
+            </td>
         </tr>
-    
         <tr>
-            <td>🎮 alan wake ii night springs</td>
+            <td>🎮 <a href="https://store.steampowered.com/app/1903340" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Clair Obscur Expedition 33
+                   </a>
+            </td>
         </tr>
-    
         <tr>
-            <td>🎮 assassins creed shadows</td>
+            <td>🎮 <a href="https://store.steampowered.com/app/489830" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     The Elder Scrolls Vi
+                   </a>
+            </td>
         </tr>
-    
         <tr>
-            <td>🎮 avowed</td>
+            <td>🎮 <a href="https://store.steampowered.com/app/412020" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Exodus
+                   </a>
+            </td>
         </tr>
-    
         <tr>
-            <td>🎮 the awakener risen</td>
+            <td>🎮 <a href="https://store.steampowered.com/app/1651560" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Fable
+                   </a>
+            </td>
         </tr>
-    
         <tr>
-            <td>🎮 bitcraft</td>
+            <td>🎮 <a href="https://store.steampowered.com/app/2552450" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Kingdom Hearts Iii Re Mind
+                   </a>
+            </td>
         </tr>
-    
         <tr>
-            <td>🎮 the blood of dawnwalker</td>
+            <td>🎮 <a href="https://store.steampowered.com/app/2816870" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Mighty Morphin Power Rangers
+                   </a>
+            </td>
         </tr>
-    
         <tr>
-            <td>🎮 number blud</td>
+            <td>🎮 <a href="https://store.steampowered.com/app/1340990" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Rise Of The Ronin
+                   </a>
+            </td>
         </tr>
-    
         <tr>
-            <td>🎮 castle crashers painter boss paradise</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 clair obscur expedition 33</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 drova forsaken kin</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 the elder scrolls vi</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 exodus</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 expelled</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 fable</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 final fantasy tactics the war of the lions</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 final fantasy vii rebirth</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 ghost of yotei</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 grit and valor 1949</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 half life alyx</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 horizon forbidden west burning shores</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 intergalactic the heretic prophet</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 judas</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 kemuri</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 kingdom hearts iii re mind</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 last sentinel</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 little devil inside</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 lysfanga the time shift warrior</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 marvels wolverine</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 masters of albion</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 metal gear solid delta snake eater</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 mighty morphin power rangers</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 monster hunter wilds</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 monument valley iii</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 ninja gaiden 4</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 paper mario the thousand year door</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 perfect dark</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 phantom blade 0</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 pragmata</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 promise mascot agency</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 revenge of the savage planet</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 rise of the ronin</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 slay the princess</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 slay the spire ii</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 sleight of hand</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 slice and dice</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 stellar blade</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 strayed lights</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 super mario bros wonder</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 super mario odyssey</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 unknown 9 awakening</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 wanderstop</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 where winds meet</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 witchbrook</td>
-        </tr>
-    
-        <tr>
-            <td>🎮 the witcher iv</td>
-        </tr>
-    
-        </tbody>
+            <td>🎮 <a href="https://store.steampowered.com/app/1477940" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style="color: #2c3e50; text-decoration: none;">
+                     Unknown 9 Awakening
+                   </a>
+            </td>
+        </tr></tbody>
     </table>
         </div>
     </body>
