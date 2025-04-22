@@ -6,8 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-bl-api": "nodemon ./api/BackLoggd-API/src/app.ts",
-    "sleep": "node -e \"setTimeout(() => process.exit(0), 1500)\"",
-    "start": "concurrently \"npm run start-bl-api\" \"npm run sleep && nodemon --env-file=.env index.js\"",
+    "sleep": "node -e \"setTimeout(() => process.exit(0), 7500)\"",
+    "start": "concurrently \"npm run start-bl-api\" \"npm run sleep && node index.js\"",
+    "start:local": "concurrently \"npm run start-bl-api\" \"npm run sleep && nodemon --env-file=.env index.js\"",
     "pup": "npx puppeteer install chrome && node ./utils/steamHandler.js"
   },
   "author": "",
