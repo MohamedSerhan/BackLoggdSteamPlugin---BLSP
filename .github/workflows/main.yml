@@ -30,7 +30,7 @@ jobs:
       # Step 4: Run the script
       - name: Run Report Script
         env:
-          STEAM_ID: ${{ secrerts.STEAM_ID}}
-          BACKLOGGD_USERNAME: ${{ secrerts.BACKLOGGD_USERNAME}}
-          BACKLOGGD_DOMAIN: ${{ secrerts.BACKLOGGD_DOMAIN}}
+          STEAM_ID: ${{ secrets.STEAM_ID}}
+          BACKLOGGD_USERNAME: ${{ secrets.BACKLOGGD_USERNAME}}
+          BACKLOGGD_DOMAIN: ${{ secrets.BACKLOGGD_DOMAIN}}
         run: npm start
