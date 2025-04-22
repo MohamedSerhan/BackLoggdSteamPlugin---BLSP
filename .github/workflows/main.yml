@@ -1,12 +1,12 @@
 name: Weekly Report Generation
 
-on:
-  schedule:
-    # Runs at 12:00 AM UTC every Monday
-    - cron: '0 0 * * 1'
+# on:
+#   schedule:
+#     # Runs at 12:00 AM UTC every Monday
+#     - cron: '0 0 * * 1'
 
-  # Manual trigger: Allows you to run the workflow manually
-  workflow_dispatch:
+#   # Manual trigger: Allows you to run the workflow manually
+#   workflow_dispatch:
 
 jobs:
   run-script:
