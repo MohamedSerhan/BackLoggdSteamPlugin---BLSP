@@ -3,6 +3,9 @@ const fs = require('node:fs');
 const axios = require('axios');
 const levenshtein = require('fast-levenshtein');
 const { generateHTMLReport } = require('./reportPage');
+const path = require('path');
+const { getSteamData, validateSteamGames } = require('./services/steamService');
+const { getBackLoggdData } = require('./services/backloggdService');
 
 // Configuration from environment variables
 const STEAM_ID = process.env.STEAM_ID;
@@ -13,6 +16,37 @@ const BACKLOGGD_USERNAME = process.env.BACKLOGGD_USERNAME;
 const STEAM_API_DELAY = 100;
 const MAX_RETRIES = 25;
 const BASE_DELAY = 150;
+
+// --- Cache Module ---
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+const CACHE_DIR = path.join(__dirname, 'cache');
+function ensureCacheDir() {
+    if (!fs.existsSync(CACHE_DIR)) fs.mkdirSync(CACHE_DIR);
+}
+function getCacheFile(key) {
+    return path.join(CACHE_DIR, key + '.json');
+}
+function setCache(key, value, ttl = CACHE_TTL) {
+    ensureCacheDir();
+    const file = getCacheFile(key);
+    const data = { value, expires: Date.now() + ttl };
+    fs.writeFileSync(file, JSON.stringify(data, null, 2));
+}
+function getCache(key) {
+    const file = getCacheFile(key);
+    if (!fs.existsSync(file)) return null;
+    try {
+        const { value, expires } = JSON.parse(fs.readFileSync(file, 'utf8'));
+        if (Date.now() > expires) {
+            fs.unlinkSync(file);
+            return null;
+        }
+        return value;
+    } catch {
+        return null;
+    }
+}
+// --- End Cache Module ---
 
 console.log('Starting BackLoggdSteamPlugin - BLSP...');
 
@@ -38,110 +72,6 @@ function areNamesSimilar(name1, name2) {
     const distance = levenshtein.get(normalized1, normalized2);
     const threshold = Math.max(normalized1.length, normalized2.length) * 0.2;
     return distance <= threshold;
-}
-
-async function steamApiRequest(url, retryCount = 0) {
-    try {
-        const response = await axios.get(url);
-        return response.data;
-    } catch (error) {
-        if (error.response?.status === 429 && retryCount < MAX_RETRIES) {
-            const retryAfter = error.response.headers['retry-after']
-                ? parseInt(error.response.headers['retry-after'], 10) * 2000
-                : Math.pow(2, retryCount) * BASE_DELAY;
-
-            console.log(`🔄 Rate limit hit. Retrying in ${retryAfter / 1000}s... (Attempt ${retryCount + 1}/${MAX_RETRIES})`);
-            await new Promise(resolve => setTimeout(resolve, retryAfter));
-            return steamApiRequest(url, retryCount + 1);
-        }
-        throw error;
-    }
-}
-
-async function getBackLoggdData() {
-    console.log('Getting wishlist and backlog data from BackLoggd...');
-    
-    const wishlistUrl = `${BACKLOGGD_DOMAIN}/user/${BACKLOGGD_USERNAME}/wishlist`;
-    const backlogUrl = `${BACKLOGGD_DOMAIN}/user/${BACKLOGGD_USERNAME}/backlog`;
-
-    try {
-        const [wishlistResponse, backlogResponse] = await Promise.all([
-            fetch(wishlistUrl),
-            fetch(backlogUrl)
-        ]);
-
-        if (!wishlistResponse.ok) throw new Error(`Wishlist HTTP ${wishlistResponse.status}`);
-        if (!backlogResponse.ok) throw new Error(`Backlog HTTP ${backlogResponse.status}`);
-
-        const wishlistJson = await wishlistResponse.json();
-        const backlogJson = await backlogResponse.json();
-        console.log('Found wishlist and backlog data from BackLoggd!');
-        
-        return {
-            wishlist: wishlistJson.content || [],
-            backlog: backlogJson.content || []
-        };
-    } catch (error) {
-        console.error('Backloggd Error:', error.message);
-        return { wishlist: [], backlog: [] };
-    }
-}
-
-async function getSteamData() {
-    const wishlistUrl = `https://api.steampowered.com/IWishlistService/GetWishlist/v1/?input_json=${
-        encodeURIComponent(JSON.stringify({ steamid: STEAM_ID }))
-    }`;
-
-    try {
-        const wishlistResponse = await axios.get(wishlistUrl);
-        const appIds = wishlistResponse.data.response.items.map(item => item.appid);
-
-        const steamGames = [];
-        
-        for (const appId of appIds) {
-            try {
-                await new Promise(resolve => setTimeout(resolve, STEAM_API_DELAY));
-                
-                const appData = await steamApiRequest(`https://store.steampowered.com/api/appdetails?appids=${appId}`);
-                const name = appData[appId]?.data?.name;
-
-                if (name) {
-                    console.log("✅ Found Game on Steam:", name);
-                    steamGames.push({ steamName: name, appId });
-                }
-            } catch (error) {
-                console.error(`❌ Failed to fetch app ${appId}:`, error.message);
-            }
-        }
-
-        return steamGames;
-    } catch (error) {
-        console.error('Steam Error:', error.message);
-        return [];
-    }
-}
-
-async function validateSteamGames(games) {
-    const validatedGames = [];
-    
-    for (const game of games) {
-        try {
-            const searchResults = await steamApiRequest(
-                `https://steamcommunity.com/actions/SearchApps/${encodeURIComponent(game)}`
-            );
-            
-            if (searchResults.length) {
-                const appId = searchResults[0].appid;
-                validatedGames.push({
-                    steamName: game,
-                    appId: appId
-                });
-            }
-        } catch (error) {
-            console.error(`Validation error for ${game}:`, error.message);
-        }
-    }
-    return validatedGames;
 }
 
 async function compareWishlists() {

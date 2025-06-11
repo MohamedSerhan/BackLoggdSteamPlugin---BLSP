@@ -3,10 +3,17 @@ import cheerio from "cheerio";
 import config from "../config";
 import { favoriteGames, recentlyPlayed, userInfo } from "../types/game";
 import { extractGame } from "../utils/game";
+import { getCache, setCache } from "./cache";
+
+const USER_INFO_TTL = 60 * 60 * 1000; // 1 hour
 
 async function getUserInfo(
   username: string
 ): Promise<userInfo | { error: string; status: number }> {
+  const cacheKey = `userInfo:${username}`;
+  const cached = getCache<userInfo | { error: string; status: number }>(cacheKey);
+  if (cached) return cached;
+
   const referer = `https://${config.baseUrl}/search/users/${username}`;
   const response = await axios
     .get(`https://${config.baseUrl}/u/${username}`, {
@@ -67,6 +74,7 @@ async function getUserInfo(
   userinfo.favoriteGames = favoriteGames;
   userinfo.recentlyPlayed = recentlyPlayed;
   userinfo = { ...userinfo, ...userStats };
+  setCache(cacheKey, userinfo, USER_INFO_TTL);
   return userinfo;
 }
 

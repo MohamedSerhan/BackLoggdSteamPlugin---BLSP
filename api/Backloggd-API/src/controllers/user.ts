@@ -5,11 +5,17 @@ import { getUserInfo } from "../lib/user";
 import { getGameInfo } from "../lib/gameInfo";
 const Route = Router();
 
+// Replace console.log with a logger (placeholder for now)
+const logger = {
+  info: (...args: any[]) => console.log('[INFO]', ...args),
+  error: (...args: any[]) => console.error('[ERROR]', ...args),
+};
+
 // Retrieves Basic User Info and Favorite Games
 async function userInfo(req: Request, res: Response) {
   const { username } = req.params;
   const startTime = performance.now();
-  console.log(`Getting user information for: ${username}`);
+  logger.info(`Getting user information for: ${username}`);
   if (!username) {
     return res
       .status(400)
@@ -19,27 +25,32 @@ async function userInfo(req: Request, res: Response) {
         details: "/:username",
       });
   }
-  const response = await getUserInfo(username);
-  const endTime = performance.now();
-  const runTime = ((endTime - startTime)/1000).toFixed(2);
-  console.log(`Recieved user information for: ${username}. This took approx ${runTime} seconds.`);
-  if (response.error) {
-    return res
-      .status(response.status || 500)
-      .json({ message: response.error, code: 0 });
+  try {
+    const response = await getUserInfo(username);
+    const endTime = performance.now();
+    const runTime = ((endTime - startTime)/1000).toFixed(2);
+    logger.info(`Received user information for: ${username}. This took approx ${runTime} seconds.`);
+    if ((response as any).error) {
+      return res
+        .status((response as any).status || 500)
+        .json({ message: (response as any).error, code: 0 });
+    }
+    return res.status(200).json({
+      message: "success",
+      code: 2,
+      content: response,
+    });
+  } catch (err: any) {
+    logger.error(`Error fetching user info for ${username}:`, err);
+    return res.status(500).json({ message: "Internal server error", code: 0 });
   }
-  return res.status(200).json({
-    message: "success",
-    code: 2,
-    content: response,
-  });
 }
 
 // Retrieves the entire User Wishlist
 async function gameInfo(req: Request, res: Response, type?: string) {
   const { username } = req.params;
   const startTime = performance.now();
-  console.log(`Scrapping ${type} game list information for ${username}`);
+  logger.info(`Scraping ${type} game list information for ${username}`);
   if (!username) {
     return res
       .status(400)
@@ -49,20 +60,25 @@ async function gameInfo(req: Request, res: Response, type?: string) {
         details: "/:username",
       });
   }
-  const response = await getGameInfo(username, type);
-  const endTime = performance.now();
-  const runTime = ((endTime - startTime)/1000).toFixed(2);
-  console.log(`Recieved ${type} game list information for ${username}. This took approx ${runTime} seconds.`);
-  if (response.error) {
-    return res
-      .status(response.status || 500)
-      .json({ message: response.error, code: 0 });
+  try {
+    const response = await getGameInfo(username, type);
+    const endTime = performance.now();
+    const runTime = ((endTime - startTime)/1000).toFixed(2);
+    logger.info(`Received ${type} game list information for ${username}. This took approx ${runTime} seconds.`);
+    if ((response as any).error) {
+      return res
+        .status((response as any).status || 500)
+        .json({ message: (response as any).error, code: 0 });
+    }
+    return res.status(200).json({
+      message: "success",
+      code: 2,
+      content: response,
+    });
+  } catch (err: any) {
+    logger.error(`Error fetching game info for ${username} (${type}):`, err);
+    return res.status(500).json({ message: "Internal server error", code: 0 });
   }
-  return res.status(200).json({
-    message: "success",
-    code: 2,
-    content: response,
-  });
 }
 
 Route

@@ -55,7 +55,18 @@ function generateHTMLReport(data) {
 </head>
 <body>
     <div class="container">
-        <button id="dark-toggle-btn" class="dark-toggle">Toggle Dark/Light Mode</button>
+        <div class="report-header">
+          <div class="theme-refresh-bar">
+            <button id="refresh-cache-btn" class="refresh-btn" title="Refresh Cache" onclick="refreshCache()">
+              <span class="refresh-icon" aria-label="Refresh">&#x21bb;</span>
+            </button>
+            <div class="theme-toggle-bar" id="theme-toggle-bar" onclick="toggleDarkMode()" title="Toggle Theme">
+              <span class="theme-icon sun">&#x2600;</span>
+              <span class="theme-slider"></span>
+              <span class="theme-icon moon">&#x1F319;</span>
+            </div>
+          </div>
+        </div>
         <h1>🎮 Wishlist Comparison Report</h1>
         <div class="stats">
             <div class="stat-box">
@@ -71,6 +82,7 @@ function generateHTMLReport(data) {
                 <div class="stat-value">${steamOnly.length}</div>
             </div>
         </div>
+        <div id="report-error" class="report-error" style="display:none;"></div>
         ${renderCollapsibleSection('🎯 Already on Both Platforms', sectionIds['Already on Both Platforms'], renderGameList(sectionIds['Already on Both Platforms'], alreadyBoth, false))}
         ${renderCollapsibleSection('📥 Add to Backloggd Wishlist', sectionIds['Add to Backloggd Wishlist'], renderGameList(sectionIds['Add to Backloggd Wishlist'], backloggdOnly, false), true, true, true)}
         ${renderCollapsibleSection('📤 Add to Steam Wishlist', sectionIds['Add to Steam Wishlist'], renderGameList(sectionIds['Add to Steam Wishlist'], steamOnly, true), true, true, false)}

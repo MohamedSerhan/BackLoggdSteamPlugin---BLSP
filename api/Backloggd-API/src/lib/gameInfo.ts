@@ -1,7 +1,9 @@
 import axios, { AxiosError } from "axios";
 import cheerio from "cheerio";
 import config from "../config";
+import { getCache, setCache } from "./cache";
 
+const GAME_LIST_TTL = 60 * 60 * 1000; // 1 hour
 
 async function scrapeGamePage(username: string, type?: string | undefined, pageIndex?: number | undefined) {
     const referer = `https://${config.baseUrl}/search/users/${username}`;
@@ -40,10 +42,12 @@ function capitalizeFirstLetters(str: string) {
 }
 
 async function getGameInfo(username: string, type?: string | undefined): Promise<any> {
+    const cacheKey = `gameInfo:${username}:${type || 'all'}`;
+    const cached = getCache<any>(cacheKey);
+    if (cached) return cached;
+
     const gameList = [];
     let pageIndex = 0;
-    
-
     let currentGameList = ['a'];
     let lastGameList = ['b'];
     while(JSON.stringify(currentGameList) != JSON.stringify(lastGameList)) {
@@ -52,9 +56,7 @@ async function getGameInfo(username: string, type?: string | undefined): Promise
         const gamePageData:any = await scrapeGamePage(username, type, pageIndex);
         const $ = cheerio.load(gamePageData);
         const rawGameList = $(".game-cover > a");
-
         currentGameList = [];
-
         for (const game of rawGameList) {
             const rawGameName = game.attribs.href;
             const gameName = rawGameName
@@ -62,13 +64,12 @@ async function getGameInfo(username: string, type?: string | undefined): Promise
                 .replace(/-/g, ' ')
                 .replace(/\/$/, '')
                 .replace(/ {2,}\d+/g, '');
-            
             const formattedGameName = capitalizeFirstLetters(gameName);
             currentGameList.push(formattedGameName);
             gameList.push(formattedGameName);
         }
     }
-
+    setCache(cacheKey, gameList, GAME_LIST_TTL);
     return gameList;
 }
 

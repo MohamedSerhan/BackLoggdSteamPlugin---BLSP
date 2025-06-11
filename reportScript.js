@@ -46,16 +46,21 @@ function collapseAll(expand) {
 function addAllToSteam() {
     var rows = document.querySelectorAll('#add-to-steam-list li');
     if (!rows.length) {
-        alert('No Steam games to add!');
+        showError('No Steam games to add!');
         return;
     }
+    var added = 0;
     rows.forEach(function(li) {
         if (!li.classList.contains('added')) {
             var appId = li.getAttribute('data-appid');
-            if (appId) addToSteamSingle(li, appId);
+            if (appId) { addToSteamSingle(li, appId); added++; }
         }
     });
-    alert('Pretend to add all Steam games to Steam wishlist!');
+    if (added === 0) {
+        showError('All Steam games in this list have already been added.');
+    } else {
+        alert('Pretend to add all Steam games to Steam wishlist!');
+    }
 }
 function addToSteamSingle(li, appId) {
     var tab = window.open('https://store.steampowered.com/app/' + appId, '_blank');
@@ -72,31 +77,47 @@ function addToBackloggdSingle(li, name) {
 function addAllToBackloggd() {
     var rows = document.querySelectorAll('#add-to-backloggd-list li');
     if (!rows.length) {
-        alert('No Backloggd games to add!');
+        showError('No Backloggd games to add!');
         return;
     }
+    var added = 0;
     rows.forEach(function(li) {
         if (!li.classList.contains('added')) {
             var name = li.getAttribute('data-name');
-            // Find the Backloggd link in this li
             var link = li.querySelector('a.game-link');
             if (link && link.href) {
                 window.open(link.href, '_blank');
+                added++;
             }
         }
     });
+    if (added === 0) {
+        showError('All Backloggd games in this list have already been added.');
+    }
 }
 function scrollToSection(id) {
     var el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+window.refreshCache = function refreshCache() {
+    fetch('/refresh-cache', { method: 'POST' })
+        .then(res => {
+            if (!res.ok) throw new Error('Server error');
+            window.location.reload();
+        })
+        .catch(() => {
+            alert('Just delete the cache manually, it\'s fine.');
+        });
+}
 function setDarkMode(on) {
     if (on) {
         document.documentElement.classList.add('dark');
         localStorage.setItem('darkMode', '1');
+        document.querySelector('.theme-slider').style.left = '38px';
     } else {
         document.documentElement.classList.remove('dark');
         localStorage.setItem('darkMode', '0');
+        document.querySelector('.theme-slider').style.left = '8px';
     }
 }
 function toggleDarkMode() {
@@ -104,16 +125,49 @@ function toggleDarkMode() {
 }
 document.addEventListener('DOMContentLoaded', function() {
     if (localStorage.getItem('darkMode') !== '0') setDarkMode(true);
+    // Move slider to correct position on load
+    setTimeout(() => {
+        if (document.documentElement.classList.contains('dark')) {
+            document.querySelector('.theme-slider').style.left = '38px';
+        } else {
+            document.querySelector('.theme-slider').style.left = '8px';
+        }
+    }, 10);
     var btn = document.getElementById('dark-toggle-btn');
     if (btn) btn.onclick = toggleDarkMode;
 });
-// Capsule fallback: swap broken images for SVG fallback
+// Utility: Show a user-facing error message at the top of the page
+function showError(message) {
+    let errorDiv = document.getElementById('report-error');
+    if (!errorDiv) {
+        errorDiv = document.createElement('div');
+        errorDiv.id = 'report-error';
+        errorDiv.className = 'report-error';
+        document.body.prepend(errorDiv);
+    }
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+    setTimeout(() => { errorDiv.style.display = 'none'; }, 7000);
+}
+
+// Modular image fallback handler
+function handleImageFallback(img, type) {
+    img.onerror = null;
+    if (type === 'steam') {
+        img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg class="game-icon steam-svg" width="60" height="22" viewBox="0 0 60 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="22" rx="4" fill="#222"/><text x="50%" y="55%" text-anchor="middle" fill="#fff" font-size="11" font-family="Segoe UI,Arial,sans-serif" dy=".3em">STEAM</text></svg>');
+    } else {
+        img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg class="game-icon backloggd-svg" width="60" height="22" viewBox="0 0 60 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="22" rx="4" fill="#3b3b3b"/><text x="50%" y="55%" text-anchor="middle" fill="#fff" font-size="11" font-family="Segoe UI,Arial,sans-serif" dy=".3em">BKLGD</text></svg>');
+    }
+}
+
+// Capsule fallback: swap broken images for SVG fallback (modularized)
 function fixBrokenCapsules() {
     document.querySelectorAll('img.game-icon').forEach(function(img) {
-        img.onerror = function() {
-            this.onerror = null;
-            this.src = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg class="game-icon steam-svg" width="60" height="22" viewBox="0 0 60 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="22" rx="4" fill="#222"/><text x="50%" y="55%" text-anchor="middle" fill="#fff" font-size="11" font-family="Segoe UI,Arial,sans-serif" dy=".3em">STEAM</text></svg>');
-        };
+        if (img.src.includes('steamstatic.com')) {
+            img.onerror = function() { handleImageFallback(this, 'steam'); };
+        } else {
+            img.onerror = function() { handleImageFallback(this, 'backloggd'); };
+        }
     });
 }
 window.addEventListener('DOMContentLoaded', fixBrokenCapsules);

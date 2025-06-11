@@ -25,11 +25,11 @@ function dedupeGames(data) {
 // Stub for future: try to find a better image for a game (e.g. via Bing, Google, IGDB, etc.)
 function getBestGameImage(name, appId) {
     if (appId) {
-        // Always use the Steam capsule, let JS handle fallback
-        return `<img class='game-icon' src='https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/capsule_184x69.jpg' alt='${escapeHtml(name)}' loading='lazy' title='Steam Capsule' />`;
+        // Use Steam capsule, mark for fallback
+        return `<img class='game-icon' data-fallback='steam' src='https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/capsule_184x69.jpg' alt='${escapeHtml(name)}' loading='lazy' title='Steam Capsule' />`;
     }
-    // For Backloggd or unknown, fallback to SVG for now
-    return BACKLOGGD_PLACEHOLDER;
+    // For Backloggd or unknown, mark for backloggd fallback
+    return `<img class='game-icon' data-fallback='backloggd' src='data:image/svg+xml;utf8,${encodeURIComponent(BACKLOGGD_PLACEHOLDER)}' alt='${escapeHtml(name)}' loading='lazy' title='No Capsule Available' />`;
 }
 
 function renderGameList(sectionId, data, isSteamWishlist) {
