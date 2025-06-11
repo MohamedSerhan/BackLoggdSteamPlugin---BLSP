@@ -1,0 +1,236 @@
+/* Clean, modern, and aligned styles for the wishlist report */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --background-color: #f8f9fa;
+    --success: #27ae60;
+    --header-bg: #fff;
+    --input-bg: #fff;
+    --input-color: #222;
+    --border-color: #e0e0e0;
+}
+html.dark {
+    --primary-color: #f8f9fa;
+    --secondary-color: #3498db;
+    --background-color: #181c24;
+    --success: #27ae60;
+    --header-bg: #23272f;
+    --input-bg: #23272f;
+    --input-color: #f8f9fa;
+    --border-color: #333a47;
+}
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 2rem;
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    transition: background 0.2s, color 0.2s;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--header-bg);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+}
+h1 {
+    color: var(--secondary-color);
+    border-bottom: 3px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+}
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.stat-box {
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: 8px;
+    text-align: center;
+}
+.stat-box h3 {
+    margin: 0 0 0.5rem;
+    color: var(--secondary-color);
+}
+.collapsible-section {
+    margin-bottom: 2rem;
+}
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background: var(--header-bg);
+    z-index: 2;
+    border-bottom: 1px solid var(--border-color);
+}
+.section-header-row {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 1.5em;
+    width: 100%;
+}
+.section-title {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+.section-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    min-width: 340px;
+    flex-shrink: 0;
+}
+.collapsible {
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    outline: none;
+    padding: 0.5rem 1.2rem;
+    text-align: left;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
+    margin-left: 1em;
+}
+.collapsible:hover { background: #217dbb; }
+.arrow { font-size: 1.1em; margin-right: 0.5em; }
+.filter-input, .sort-select {
+    height: 38px;
+    box-sizing: border-box;
+    padding: 0.4rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    background: var(--input-bg);
+    color: var(--input-color);
+    transition: background 0.2s, color 0.2s;
+}
+.add-all-btn, .backloggd-add-all-btn {
+    background: #1b2838;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-left: 0.5em;
+    transition: background 0.2s, color 0.2s;
+}
+.add-all-btn:active, .backloggd-add-all-btn:active { background: #14506e; }
+html.dark .add-all-btn, html.dark .backloggd-add-all-btn {
+    background: #3498db;
+    color: #fff;
+}
+.add-btn, .backloggd-add-btn {
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 14px;
+    margin-left: 15px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.2s, color 0.2s;
+}
+.add-btn:active, .backloggd-add-btn:active { background: #217dbb; }
+html.dark .add-btn, html.dark .backloggd-add-btn {
+    background: #3498db;
+    color: #fff;
+}
+.game-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.game-list li {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.game-list li:last-child { border-bottom: none; }
+.checkmark {
+    color: var(--success);
+    font-size: 1.2em;
+    margin-right: 0.7em;
+    vertical-align: middle;
+    display: none;
+    margin-left: 0.2em;
+}
+.added .checkmark { display: inline; }
+.game-link { color: var(--primary-color); text-decoration: none; font-weight: 500; }
+.add-btn {
+    background: #1b2838;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    margin-left: 15px;
+    cursor: pointer;
+    font-size: 1em;
+}
+.add-btn:active { background: #14506e; }
+.collapse-all-btn {
+    background: #e0e0e0;
+    color: #2c3e50;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    font-size: 1em;
+    float: right;
+    transition: background 0.2s, color 0.2s;
+}
+html.dark .collapse-all-btn {
+    background: #333a47 !important;
+    color: #f8f9fa !important;
+    border: 1px solid #444a5a;
+}
+.anchor-link { color: var(--secondary-color); text-decoration: underline; cursor: pointer; }
+.dark-toggle {
+    float: right;
+    margin-left: 1em;
+    background: var(--secondary-color);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 1em;
+    cursor: pointer;
+}
+.dark-toggle:active { background: #217dbb; }
+.game-icon {
+    width: 60px;
+    height: 22px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #222;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    margin-right: 0.5em;
+}
+.steam-svg, .backloggd-svg {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.5em;
+}
+.backloggd-svg rect { fill: #3b3b3b; }
+.backloggd-svg text { fill: #fff; }
+.steam-svg rect { fill: #222; }
+.steam-svg text { fill: #fff; }
+@media (max-width: 700px) {
+    .container { padding: 0.5rem; }
+    .stats { grid-template-columns: 1fr; }
+    .section-header-row { flex-direction: column; align-items: flex-start; gap: 0.5em; }
+    .section-controls { min-width: 0; width: 100%; }
+}
