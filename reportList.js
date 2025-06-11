@@ -7,7 +7,7 @@ function slugify(str) {
         .replace(/^-+|-+$/g, '');
 }
 
-const BACKLOGGD_PLACEHOLDER = `<svg class='game-icon backloggd-svg' width='60' height='22' viewBox='0 0 60 22' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='60' height='22' rx='4' fill='#3b3b3b'/><text x='50%' y='55%' text-anchor='middle' fill='#fff' font-size='11' font-family='Segoe UI,Arial,sans-serif' dy='.3em'>BLGD</text></svg>`;
+const BACKLOGGD_PLACEHOLDER = `<svg class='game-icon backloggd-svg' width='60' height='22' viewBox='0 0 60 22' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='60' height='22' rx='4' fill='#3b3b3b'/><text x='50%' y='55%' text-anchor='middle' fill='#fff' font-size='11' font-family='Segoe UI,Arial,sans-serif' dy='.3em'>BKLGD</text></svg>`;
 const STEAM_PLACEHOLDER = `<svg class='game-icon steam-svg' width='60' height='22' viewBox='0 0 60 22' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='60' height='22' rx='4' fill='#222'/><text x='50%' y='55%' text-anchor='middle' fill='#fff' font-size='11' font-family='Segoe UI,Arial,sans-serif' dy='.3em'>STEAM</text></svg>`;
 
 function dedupeGames(data) {

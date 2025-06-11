@@ -3,14 +3,10 @@ const { sortGamesAZ } = require('./reportUtils');
 const fs = require('node:fs');
 
 function renderCollapsibleSection(title, id, listHtml, defaultOpen = false, showAddAll = false, isBackloggd = false) {
-    console.log("🚀 ~ renderCollapsibleSection ~ showAddAll:", showAddAll)
-    console.log("🚀 ~ renderCollapsibleSection ~ isBackloggd:", isBackloggd)
     let addAllBtn = '';
     if (showAddAll && isBackloggd) {
-        console.log('Adding Backloggd button');
         addAllBtn = `<button class="add-all-btn backloggd-add-all-btn" onclick="addAllToBackloggd()">Add All to Backloggd</button>`;
     } else if (showAddAll && !isBackloggd) {
-        console.log('Adding Steam button');
         addAllBtn = `<button class="add-all-btn steam-add-all-btn" onclick="addAllToSteam()">Add All to Steam</button>`;
     }
     return `
