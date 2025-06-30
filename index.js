@@ -1,52 +1,8 @@
 require('dotenv').config();
-const fs = require('node:fs');
-const axios = require('axios');
 const levenshtein = require('fast-levenshtein');
 const { generateHTMLReport } = require('./reportPage');
-const path = require('path');
 const { getSteamData, validateSteamGames } = require('./services/steamService');
 const { getBackLoggdData } = require('./services/backloggdService');
-
-// Configuration from environment variables
-const STEAM_ID = process.env.STEAM_ID;
-const BACKLOGGD_DOMAIN = process.env.BACKLOGGD_DOMAIN;
-const BACKLOGGD_USERNAME = process.env.BACKLOGGD_USERNAME;
-
-// Constants for Steam API rate limiting and retries
-const STEAM_API_DELAY = 100;
-const MAX_RETRIES = 25;
-const BASE_DELAY = 150;
-
-// --- Cache Module ---
-const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
-const CACHE_DIR = path.join(__dirname, 'cache');
-function ensureCacheDir() {
-    if (!fs.existsSync(CACHE_DIR)) fs.mkdirSync(CACHE_DIR);
-}
-function getCacheFile(key) {
-    return path.join(CACHE_DIR, key + '.json');
-}
-function setCache(key, value, ttl = CACHE_TTL) {
-    ensureCacheDir();
-    const file = getCacheFile(key);
-    const data = { value, expires: Date.now() + ttl };
-    fs.writeFileSync(file, JSON.stringify(data, null, 2));
-}
-function getCache(key) {
-    const file = getCacheFile(key);
-    if (!fs.existsSync(file)) return null;
-    try {
-        const { value, expires } = JSON.parse(fs.readFileSync(file, 'utf8'));
-        if (Date.now() > expires) {
-            fs.unlinkSync(file);
-            return null;
-        }
-        return value;
-    } catch {
-        return null;
-    }
-}
-// --- End Cache Module ---
 
 console.log('Starting BackLoggdSteamPlugin - BLSP...');
 
@@ -75,19 +31,25 @@ function areNamesSimilar(name1, name2) {
 }
 
 async function compareWishlists() {
+    // Fetch Steam and Backloggd data
+    console.log('Fetching data from Steam and Backloggd...');
     const [steamWishlist, backLoggdData] = await Promise.all([
         getSteamData(),
         getBackLoggdData()
     ]);
 
+   // Combine and normalize Backloggd wishlist and backlog
+    console.log('Combining and normalizing Backloggd data...');
     const normalizedBackloggdCombined = [
         ...backLoggdData.wishlist,
         ...backLoggdData.backlog
     ].map(normalizeGameName);
 
+    // Create a comparison object
     const comparison = { both: [], steamOnly: [], backLoggdOnly: [] };
 
     // Compare Steam games against Backloggd
+    console.log('Comparing Steam wishlist against Backloggd data...');
     steamWishlist.forEach(steamGame => {
         const matched = normalizedBackloggdCombined.some(backloggdGame => 
             areNamesSimilar(steamGame.steamName, backloggdGame)
@@ -95,8 +57,10 @@ async function compareWishlists() {
         
         matched ? comparison.both.push(steamGame) : comparison.steamOnly.push(steamGame.steamName);
     });
+    console.log(`Steam wishlist comparison complete: ${comparison.both.length} matches, ${comparison.steamOnly.length} only on Steam`);
 
     // Compare Backloggd wishlist against Steam
+    console.log('Comparing Backloggd wishlist against Steam data...');
     backLoggdData.wishlist.forEach(backloggdGame => {
         const normalized = normalizeGameName(backloggdGame);
         const exists = steamWishlist.some(steamGame => 
@@ -105,10 +69,19 @@ async function compareWishlists() {
         
         if (!exists) comparison.backLoggdOnly.push(backloggdGame);
     });
+    console.log(`Backloggd wishlist comparison complete: ${comparison.backLoggdOnly.length} only on Backloggd`);
 
+    // Validate Steam games
+    console.log('Validating Backloggd Games exist on Steam...');
     comparison.backLoggdOnly = await validateSteamGames(comparison.backLoggdOnly);
+    console.log(`Validated Backloggd games: ${comparison.backLoggdOnly.length} valid games`);
 
-    return removeDupesFromWishlist(comparison);
+    // Remove duplicates from the comparison
+    console.log('Removing duplicates from wishlist comparison...');
+    const finalizedList = removeDupesFromWishlist(comparison);
+    console.log('Removal of duplicates complete');
+    console.log('Generating wishlist HTML report...');
+    return finalizedList
 }
 
 function removeDupesFromWishlist(wishlistComparison) {
@@ -123,9 +96,10 @@ function removeDupesFromWishlist(wishlistComparison) {
     };
 }
 
+// Start the comparison process
 compareWishlists()
     .then(data => {
-        const { generateHTMLReport } = require('./reportPage');
+        // Generate the HTML report
         generateHTMLReport(data);
     })
-    .catch(error => console.error('Error:', error.message));
+    .catch(error => console.error('Error with report: ', error.message));

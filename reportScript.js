@@ -100,14 +100,7 @@ function scrollToSection(id) {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 window.refreshCache = function refreshCache() {
-    fetch('/refresh-cache', { method: 'POST' })
-        .then(res => {
-            if (!res.ok) throw new Error('Server error');
-            window.location.reload();
-        })
-        .catch(() => {
-            alert('Just delete the cache manually, it\'s fine.');
-        });
+    alert('Cache refreshed successfully... JK delete the cache file manually to refresh.');
 }
 function setDarkMode(on) {
     if (on) {

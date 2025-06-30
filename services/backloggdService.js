@@ -34,28 +34,46 @@ function getCache(key) {
 }
 
 async function getBackLoggdData() {
+    console.log('Checking for cached Backloggd data...');
     const cacheKey = `backloggd_${BACKLOGGD_USERNAME}`;
     const cached = getCache(cacheKey);
-    if (cached) return cached;
+    if (cached) {
+        console.log(`Found cached Backloggd data for ${BACKLOGGD_USERNAME}`);
+        return cached
+    };
     const wishlistUrl = `${BACKLOGGD_DOMAIN}/user/${BACKLOGGD_USERNAME}/wishlist`;
     const backlogUrl = `${BACKLOGGD_DOMAIN}/user/${BACKLOGGD_USERNAME}/backlog`;
     try {
+        console.log(`Fetching Backloggd data for ${BACKLOGGD_USERNAME}...`);
         const [wishlistResponse, backlogResponse] = await Promise.all([
             fetch(wishlistUrl),
             fetch(backlogUrl)
         ]);
         if (!wishlistResponse.ok) throw new Error(`Wishlist HTTP ${wishlistResponse.status}`);
         if (!backlogResponse.ok) throw new Error(`Backlog HTTP ${backlogResponse.status}`);
+
         const wishlistJson = await wishlistResponse.json();
+        // List out name of wishlist items
+        wishlistJson.content.forEach(item => {
+            console.log(`Wishlist Item: ${item}`);
+        });
+        
         const backlogJson = await backlogResponse.json();
+        // List out name of backlog items
+        backlogJson.content.forEach(item => {
+            console.log(`Backlog Item: ${item}`);
+        });
+
         const result = {
             wishlist: wishlistJson.content || [],
             backlog: backlogJson.content || []
         };
+
         setCache(cacheKey, result);
+        console.log(`Fetched Backloggd data for ${BACKLOGGD_USERNAME}: ${result.wishlist.length} wishlist items, ${result.backlog.length} backlog items`);
         return result;
     } catch (error) {
-        // Optionally log error
+        console.error('Error fetching Backloggd data:', error.message);
         return { wishlist: [], backlog: [] };
     }
 }

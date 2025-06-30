@@ -5,8 +5,8 @@
       "appId": 108600
     },
     {
-      "steamName": "Papers, Please",
-      "appId": 239030
+      "steamName": "Monaco: What's Yours Is Mine",
+      "appId": 113020
     },
     {
       "steamName": "Caves of Qud",
@@ -31,10 +31,6 @@
     {
       "steamName": "Foundation",
       "appId": 690830
-    },
-    {
-      "steamName": "Scythe: Digital Edition",
-      "appId": 718560
     },
     {
       "steamName": "Tactical Breach Wizards",
@@ -77,12 +73,12 @@
       "appId": 1256670
     },
     {
-      "steamName": "UNBEATABLE [white label]",
-      "appId": 1290490
-    },
-    {
       "steamName": "Wanderstop",
       "appId": 1299460
+    },
+    {
+      "steamName": "PEAK",
+      "appId": 3527290
     },
     {
       "steamName": "State of Decay 3",
@@ -117,18 +113,6 @@
       "appId": 1449110
     },
     {
-      "steamName": "(the) Gnorp Apologue",
-      "appId": 1473350
-    },
-    {
-      "steamName": "Wartales",
-      "appId": 1527950
-    },
-    {
-      "steamName": "Shadow Gambit: The Cursed Crew",
-      "appId": 1545560
-    },
-    {
       "steamName": "Worship",
       "appId": 1548180
     },
@@ -141,12 +125,8 @@
       "appId": 1597080
     },
     {
-      "steamName": "The Alters",
-      "appId": 1601570
-    },
-    {
-      "steamName": "The Plucky Squire",
-      "appId": 1627570
+      "steamName": "Hell is Us",
+      "appId": 1620730
     },
     {
       "steamName": "REPLACED",
@@ -155,10 +135,6 @@
     {
       "steamName": "Age of Wonders 4",
       "appId": 1669000
-    },
-    {
-      "steamName": "The Case of the Golden Idol",
-      "appId": 1677770
     },
     {
       "steamName": "The Matchless Kungfu",
@@ -181,20 +157,12 @@
       "appId": 1808500
     },
     {
-      "steamName": "Nine Sols",
-      "appId": 1809540
-    },
-    {
       "steamName": "Den of Wolves",
       "appId": 1818140
     },
     {
       "steamName": "Witchbrook",
       "appId": 1846700
-    },
-    {
-      "steamName": "Morbid Metal",
-      "appId": 1866130
     },
     {
       "steamName": "Reus 2",
@@ -223,10 +191,6 @@
     {
       "steamName": "#BLUD",
       "appId": 1921480
-    },
-    {
-      "steamName": "South of Midnight",
-      "appId": 1934570
     },
     {
       "steamName": "Mafia: The Old Country",
@@ -265,8 +229,8 @@
       "appId": 2050650
     },
     {
-      "steamName": "Rift of the NecroDancer",
-      "appId": 2073250
+      "steamName": "BALL x PIT",
+      "appId": 2062430
     },
     {
       "steamName": "Threads of Time",
@@ -277,20 +241,16 @@
       "appId": 2106730
     },
     {
-      "steamName": "REMATCH",
-      "appId": 2138720
+      "steamName": "Chronicles: Medieval",
+      "appId": 2231020
     },
     {
       "steamName": "Fields of Mistria",
       "appId": 2142790
     },
     {
-      "steamName": "Lysfanga: The Time Shift Warrior",
-      "appId": 2161620
-    },
-    {
-      "steamName": "Strayed Lights",
-      "appId": 2162020
+      "steamName": "At Fate's End",
+      "appId": 2210150
     },
     {
       "steamName": "Into the Dead: Our Darkest Days",
@@ -329,24 +289,12 @@
       "appId": 2396240
     },
     {
-      "steamName": "Monaco: What's Yours Is Mine",
-      "appId": 113020
-    },
-    {
       "steamName": "METAL GEAR SOLID Δ: SNAKE EATER",
       "appId": 2417610
     },
     {
-      "steamName": "Neva",
-      "appId": 2420660
-    },
-    {
       "steamName": "Clockwork Revolution",
       "appId": 2439280
-    },
-    {
-      "steamName": "Avowed",
-      "appId": 2457220
     },
     {
       "steamName": "New Arc Line",
@@ -367,10 +315,6 @@
     {
       "steamName": "SONIC X SHADOW GENERATIONS",
       "appId": 2513280
-    },
-    {
-      "steamName": "KINGDOM HEARTS III + Re Mind (DLC)",
-      "appId": 2552450
     },
     {
       "steamName": "Promise Mascot Agency",
@@ -397,8 +341,8 @@
       "appId": 2638890
     },
     {
-      "steamName": "The First Berserker: Khazan",
-      "appId": 2680010
+      "steamName": "007 First Light",
+      "appId": 3768760
     },
     {
       "steamName": "Battle Aces",
@@ -465,10 +409,6 @@
       "appId": 2946850
     },
     {
-      "steamName": "Generation Exile",
-      "appId": 2963240
-    },
-    {
       "steamName": "Expelled!",
       "appId": 2963890
     },
@@ -533,8 +473,8 @@
       "appId": 3321460
     },
     {
-      "steamName": "BitCraft Online",
-      "appId": 3454650
+      "steamName": "Macabre",
+      "appId": 1794830
     },
     {
       "steamName": "Stellar Blade™",
@@ -545,13 +485,125 @@
       "appId": 3564740
     },
     {
-      "steamName": "The Life and Suffering of Sir Brante",
-      "appId": 1272160
+      "steamName": "Farever",
+      "appId": 3672400
     },
     {
-      "steamName": "Hell is Us",
-      "appId": 1620730
+      "steamName": "DarkSwitch",
+      "appId": 3132870
+    },
+    {
+      "steamName": "Every Day We Fight",
+      "appId": 1546080
+    },
+    {
+      "steamName": "FANTASY LIFE i: The Girl Who Steals Time",
+      "appId": 2993780
+    },
+    {
+      "steamName": "FINAL FANTASY TACTICS - The Ivalice Chronicles",
+      "appId": 1004640
+    },
+    {
+      "steamName": "Game of Thrones: War for Westeros",
+      "appId": 2838950
+    },
+    {
+      "steamName": "Generation Exile",
+      "appId": 2963240
+    },
+    {
+      "steamName": "LEGO® Voyagers",
+      "appId": 1538550
+    },
+    {
+      "steamName": "Lumines Arise",
+      "appId": 2370000
+    },
+    {
+      "steamName": "Mandragora: Whispers of the Witch Tree",
+      "appId": 1721060
+    },
+    {
+      "steamName": "Mortal Shell II",
+      "appId": 2584270
+    },
+    {
+      "steamName": "Nexus 5X",
+      "appId": 1983990
+    },
+    {
+      "steamName": "PRAGMATA",
+      "appId": 3357650
+    },
+    {
+      "steamName": "Resonance: A Plague Tale Legacy",
+      "appId": 2713000
+    },
+    {
+      "steamName": "Return of the Obra Dinn",
+      "appId": 653530
+    },
+    {
+      "steamName": "SacriFire",
+      "appId": 1661330
+    },
+    {
+      "steamName": "Sea of Remnants",
+      "appId": 3633680
+    },
+    {
+      "steamName": "SHUTEN ORDER",
+      "appId": 3216500
+    },
+    {
+      "steamName": "Sol Cesto",
+      "appId": 2738490
+    },
+    {
+      "steamName": "Sonic Racing: CrossWorlds",
+      "appId": 2486820
+    },
+    {
+      "steamName": "StarVaders",
+      "appId": 2097570
+    },
+    {
+      "steamName": "Teenage Mutant Ninja Turtles: Tactical Takedown",
+      "appId": 3229100
+    },
+    {
+      "steamName": "The Demons Told Me to Make This Game",
+      "appId": 2835690
+    },
+    {
+      "steamName": "There Are No Ghosts at the Grand",
+      "appId": 3725190
+    },
+    {
+      "steamName": "Tides of Tomorrow 🌊",
+      "appId": 2678080
+    },
+    {
+      "steamName": "Tinykin",
+      "appId": 1599020
+    },
+    {
+      "steamName": "Myst",
+      "appId": 1255560
+    },
+    {
+      "steamName": "Riven",
+      "appId": 1712350
+    },
+    {
+      "steamName": "The Blood of Dawnwalker",
+      "appId": 3751260
+    },
+    {
+      "steamName": "UNBEATABLE",
+      "appId": 2240620
     }
   ],
-  "expires": 1749696232377
+  "expires": 1751328087519
 }
