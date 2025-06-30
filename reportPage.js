@@ -1,6 +1,8 @@
 const { renderGameList } = require('./reportList');
 const { sortGamesAZ } = require('./reportUtils');
 const fs = require('node:fs');
+const { logSuccess } = require('./services/logColors');
+const { log } = require('node:console');
 
 function renderCollapsibleSection(title, id, listHtml, defaultOpen = false, showAddAll = false, isBackloggd = false) {
     let addAllBtn = '';
@@ -90,7 +92,7 @@ function generateHTMLReport(data) {
 </body>
 </html>`;
     fs.writeFileSync('./wishlistReport.html', htmlContent);
-    console.log('✨ Generated beautiful HTML report successfully!');
+    logSuccess('✨ Generated beautiful HTML report successfully!');
 }
 
 module.exports = { generateHTMLReport };

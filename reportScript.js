@@ -100,7 +100,21 @@ function scrollToSection(id) {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 window.refreshCache = function refreshCache() {
-    alert('Cache refreshed successfully... JK delete the cache file manually to refresh.');
+    fetch('http://localhost:8080/refresh/refresh-cache', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.code === 2) {
+            alert('Cache refreshed successfully!');
+        } else {
+            showError('Failed to refresh cache: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(err => {
+        showError('Failed to refresh cache: ' + err);
+    });
 }
 function setDarkMode(on) {
     if (on) {

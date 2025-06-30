@@ -3,8 +3,9 @@ const levenshtein = require('fast-levenshtein');
 const { generateHTMLReport } = require('./reportPage');
 const { getSteamData, validateSteamGames } = require('./services/steamService');
 const { getBackLoggdData } = require('./services/backloggdService');
+const { logInfo, logSuccess, logWarn, logError, logFetch, logCache } = require('./services/logColors');
 
-console.log('Starting BackLoggdSteamPlugin - BLSP...');
+logInfo('Starting BackLoggdSteamPlugin - BLSP...');
 
 function normalizeGameName(name) {
     return name
@@ -32,14 +33,13 @@ function areNamesSimilar(name1, name2) {
 
 async function compareWishlists() {
     // Fetch Steam and Backloggd data
-    console.log('Fetching data from Steam and Backloggd...');
+    logInfo('Fetching data from Steam and Backloggd...');
     const [steamWishlist, backLoggdData] = await Promise.all([
         getSteamData(),
         getBackLoggdData()
     ]);
-
-   // Combine and normalize Backloggd wishlist and backlog
-    console.log('Combining and normalizing Backloggd data...');
+    logInfo('Combining and normalizing Backloggd data...');
+    // Combine and normalize Backloggd wishlist and backlog
     const normalizedBackloggdCombined = [
         ...backLoggdData.wishlist,
         ...backLoggdData.backlog
@@ -49,7 +49,7 @@ async function compareWishlists() {
     const comparison = { both: [], steamOnly: [], backLoggdOnly: [] };
 
     // Compare Steam games against Backloggd
-    console.log('Comparing Steam wishlist against Backloggd data...');
+    logInfo('Comparing Steam wishlist against Backloggd data...');
     steamWishlist.forEach(steamGame => {
         const matched = normalizedBackloggdCombined.some(backloggdGame => 
             areNamesSimilar(steamGame.steamName, backloggdGame)
@@ -57,10 +57,9 @@ async function compareWishlists() {
         
         matched ? comparison.both.push(steamGame) : comparison.steamOnly.push(steamGame.steamName);
     });
-    console.log(`Steam wishlist comparison complete: ${comparison.both.length} matches, ${comparison.steamOnly.length} only on Steam`);
-
+    logInfo(`Steam wishlist comparison complete: ${comparison.both.length} matches, ${comparison.steamOnly.length} only on Steam`);
+    logInfo('Comparing Backloggd wishlist against Steam data...');
     // Compare Backloggd wishlist against Steam
-    console.log('Comparing Backloggd wishlist against Steam data...');
     backLoggdData.wishlist.forEach(backloggdGame => {
         const normalized = normalizeGameName(backloggdGame);
         const exists = steamWishlist.some(steamGame => 
@@ -69,18 +68,15 @@ async function compareWishlists() {
         
         if (!exists) comparison.backLoggdOnly.push(backloggdGame);
     });
-    console.log(`Backloggd wishlist comparison complete: ${comparison.backLoggdOnly.length} only on Backloggd`);
-
+    logInfo(`Backloggd wishlist comparison complete: ${comparison.backLoggdOnly.length} only on Backloggd`);
+    logInfo('Validating Backloggd Games exist on Steam...');
     // Validate Steam games
-    console.log('Validating Backloggd Games exist on Steam...');
     comparison.backLoggdOnly = await validateSteamGames(comparison.backLoggdOnly);
-    console.log(`Validated Backloggd games: ${comparison.backLoggdOnly.length} valid games`);
-
+    logInfo(`Validated Backloggd games: ${comparison.backLoggdOnly.length} valid games`);
+    logInfo('Removing duplicates from wishlist comparison...');
     // Remove duplicates from the comparison
-    console.log('Removing duplicates from wishlist comparison...');
     const finalizedList = removeDupesFromWishlist(comparison);
-    console.log('Removal of duplicates complete');
-    console.log('Generating wishlist HTML report...');
+    logInfo('Removal of duplicates complete');
     return finalizedList
 }
 
@@ -102,4 +98,4 @@ compareWishlists()
         // Generate the HTML report
         generateHTMLReport(data);
     })
-    .catch(error => console.error('Error with report: ', error.message));
+    .catch(error => logError('Error with report: ' + error.message));

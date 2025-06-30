@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('path');
 const axios = require('axios');
 const levenshtein = require('fast-levenshtein');
+const { logInfo, logSuccess, logWarn, logError, logFetch } = require('./logColors');
 
 const STEAM_ID = process.env.STEAM_ID;
 const STEAM_API_DELAY = 100;
@@ -40,13 +41,13 @@ function getCache(key) {
 
 async function steamApiRequest(url, retryCount = 0) {
     try {
-        console.log(`Making Steam API request: ${url}`);
+        logFetch(`Making Steam API request: ${url}`);
         const response = await axios.get(url);
         return response.data;
     } catch (error) {
-        console.error(`Error making Steam API request: ${error.message}`);
+        logError(`Error making Steam API request: ${error.message}`);
         if (error.response?.status === 429 && retryCount < MAX_RETRIES) {
-            console.warn(`Rate limit exceeded. Retrying request (${retryCount + 1}/${MAX_RETRIES})...`);
+            logWarn(`Rate limit exceeded. Retrying request (${retryCount + 1}/${MAX_RETRIES})...`);
             const retryAfter = error.response.headers['retry-after']
                 ? parseInt(error.response.headers['retry-after'], 10) * 2000
                 : Math.pow(2, retryCount) * BASE_DELAY;
@@ -58,15 +59,15 @@ async function steamApiRequest(url, retryCount = 0) {
 }
 
 async function getSteamData() {
-    console.log('Checking for cached Steam data...');
+    logInfo('Checking for cached Steam data...');
     const cacheKey = `steam_${STEAM_ID}`;
     const cached = getCache(cacheKey);
     if (cached) {
-        console.log('Found cached Steam data for ID:', STEAM_ID);
+        logSuccess(`Found cached Steam data for ID: ${STEAM_ID}`);
         return cached;
     }
     try {
-        console.log('Fetching Steam data for ID:', STEAM_ID);
+        logFetch(`Fetching Steam data for ID: ${STEAM_ID}`);
         const wishlistUrl = `https://api.steampowered.com/IWishlistService/GetWishlist/v1/?input_json=${
             encodeURIComponent(JSON.stringify({ steamid: STEAM_ID }))
         }`;
@@ -78,19 +79,19 @@ async function getSteamData() {
                 await new Promise(resolve => setTimeout(resolve, STEAM_API_DELAY));
                 const appData = await steamApiRequest(`https://store.steampowered.com/api/appdetails?appids=${appId}`);
                 const name = appData[appId]?.data?.name;
-                console.log(`Fetched app ${appId}: ${name}`);
+                logInfo(`Fetched app ${appId}: ${name}`);
                 if (name) {
                     steamGames.push({ steamName: name, appId });
                 }
             } catch (error) {
-                console.error(`Error fetching app details for ${appId}:`, error.message);
+                logError(`Error fetching app details for ${appId}: ${error.message}`);
             }
         }
         setCache(cacheKey, steamGames);
-        console.log(`Fetched Steam data for ${STEAM_ID}: ${steamGames.length} games`);
+        logSuccess(`Fetched Steam data for ${STEAM_ID}: ${steamGames.length} games`);
         return steamGames;
     } catch (error) {
-        console.error('Error fetching Steam data:', error.message);
+        logError(`Error fetching Steam data: ${error.message}`);
         return [];
     }
 }

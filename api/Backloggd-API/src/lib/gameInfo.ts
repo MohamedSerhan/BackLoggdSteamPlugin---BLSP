@@ -1,9 +1,8 @@
 import axios, { AxiosError } from "axios";
 import cheerio from "cheerio";
 import config from "../config";
-import { getCache, setCache } from "./cache";
-
-const GAME_LIST_TTL = 60 * 60 * 1000; // 1 hour
+// @ts-ignore
+import { logError, logInfo } from "../../../../services/logColors";
 
 async function scrapeGamePage(username: string, type?: string | undefined, pageIndex?: number | undefined) {
     const referer = `https://${config.baseUrl}/search/users/${username}`;
@@ -18,7 +17,7 @@ async function scrapeGamePage(username: string, type?: string | undefined, pageI
         .catch((err) => err);
 
     if (response instanceof AxiosError) {
-        console.log(response.response?.status);
+        logInfo(response.response?.status);
         let error, status;
         if (response.response?.status === 404) {
         error = "User not found";
@@ -42,10 +41,6 @@ function capitalizeFirstLetters(str: string) {
 }
 
 async function getGameInfo(username: string, type?: string | undefined): Promise<any> {
-    const cacheKey = `gameInfo:${username}:${type || 'all'}`;
-    const cached = getCache<any>(cacheKey);
-    if (cached) return cached;
-
     const gameList = [];
     let pageIndex = 0;
     let currentGameList = ['a'];
@@ -69,7 +64,6 @@ async function getGameInfo(username: string, type?: string | undefined): Promise
             gameList.push(formattedGameName);
         }
     }
-    setCache(cacheKey, gameList, GAME_LIST_TTL);
     return gameList;
 }
 

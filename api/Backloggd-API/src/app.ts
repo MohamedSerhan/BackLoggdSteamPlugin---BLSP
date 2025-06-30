@@ -2,6 +2,8 @@
 
 import express, { Request, Response, NextFunction } from "express";
 import routers from "./routes";
+// @ts-ignore
+import { logSuccess } from "../../../services/logColors";
 const app = express();
 
 app.set("trust proxy", 1);
@@ -29,5 +31,5 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.all("*", routers);
 
 app.listen(8080, () => {
-  console.log(`Server started Listening at 8080`);
+  logSuccess("Backloggd API is running on port 8080");
 });
