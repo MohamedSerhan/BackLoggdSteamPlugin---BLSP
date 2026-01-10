@@ -43,6 +43,12 @@ function renderGameList(sectionId, data, isSteamWishlist) {
         let li = `<li data-name="${escapeHtml(name.toLowerCase())}"${appId ? ` data-appid="${appId}"` : ''}>`;
         li += `<span class='checkmark'>✔</span>`;
         li += iconHtml;
+        
+        // Add exclude button for all games
+        const gameName = escapeHtml(name).replace(/"/g, '&quot;');
+        const appIdAttr = appId || 'null';
+        li += `<button class='exclude-btn' onclick="toggleExcludeGame(this, '${gameName}', ${appIdAttr})" title="Exclude this game (misidentified or incorrect)" aria-label="Exclude game">🚫</button>`;
+        
         if (isSteamWishlist && appId) {
             li += `<a class='game-link' href="https://store.steampowered.com/app/${appId}" target="_blank" rel="noopener noreferrer">${escapeHtml(name)}</a><button class='add-btn' onclick='addToSteamSingle(this.parentNode, "${appId}")'>Add</button>`;
         } else if (sectionId === 'add-to-backloggd') {

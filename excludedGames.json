@@ -1,0 +1,131 @@
+{
+  "excludedGames": [
+    {
+      "gameName": "Ale Abbey - Monastery Brewery Tycoon",
+      "appId": null,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T22:56:07.444Z"
+    },
+    {
+      "gameName": "and Roger",
+      "appId": null,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T22:56:23.677Z"
+    },
+    {
+      "gameName": "Öoo",
+      "appId": null,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T22:57:17.376Z"
+    },
+    {
+      "gameName": "Steam Controller",
+      "appId": null,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T22:58:22.357Z"
+    },
+    {
+      "gameName": "Steam Frame",
+      "appId": null,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T22:58:23.846Z"
+    },
+    {
+      "gameName": "Steam Machine",
+      "appId": null,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T22:58:25.319Z"
+    },
+    {
+      "gameName": "UNBEATABLE [white label]",
+      "appId": null,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T22:59:03.351Z"
+    },
+    {
+      "gameName": "Ale Abbey",
+      "appId": 2789460,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T22:59:14.235Z"
+    },
+    {
+      "gameName": "Cloverpit",
+      "appId": 3314790,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T22:59:27.376Z"
+    },
+    {
+      "gameName": "Divinity",
+      "appId": 435150,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T23:00:00.975Z"
+    },
+    {
+      "gameName": "Forest 3",
+      "appId": 1665210,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T23:00:39.660Z"
+    },
+    {
+      "gameName": "Fable",
+      "appId": 288470,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T23:00:41.690Z"
+    },
+    {
+      "gameName": "Ghost Of Yotei Legends",
+      "appId": 2432030,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T23:00:47.520Z"
+    },
+    {
+      "gameName": "Grand Theft Auto Vi",
+      "appId": 3240220,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T23:00:57.491Z"
+    },
+    {
+      "gameName": "Lords Of The Fallen Ii",
+      "appId": 1501750,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T23:01:08.522Z"
+    },
+    {
+      "gameName": "Orbitals",
+      "appId": 3556690,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T23:01:44.327Z"
+    },
+    {
+      "gameName": "Project Tal",
+      "appId": 2325030,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T23:01:49.674Z"
+    },
+    {
+      "gameName": "Star Wars Fate Of The Old Republic",
+      "appId": 208580,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T23:02:06.953Z"
+    },
+    {
+      "gameName": "The Elder Scrolls Vi",
+      "appId": 489830,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T23:02:08.760Z"
+    },
+    {
+      "gameName": "Warlock",
+      "appId": 203630,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T23:02:26.475Z"
+    },
+    {
+      "gameName": "Ooo",
+      "appId": 2721890,
+      "reason": "Misidentified or incorrect",
+      "excludedAt": "2026-01-10T23:29:51.260Z"
+    }
+  ],
+  "lastUpdated": "2026-01-10T23:29:51.260Z"
+}

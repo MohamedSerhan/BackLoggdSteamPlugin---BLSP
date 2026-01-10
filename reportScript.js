@@ -178,3 +178,67 @@ function fixBrokenCapsules() {
     });
 }
 window.addEventListener('DOMContentLoaded', fixBrokenCapsules);
+
+// Game exclusion/tagging functionality
+function toggleExcludeGame(button, gameName, appId) {
+    const li = button.closest('li');
+    const isExcluded = li.classList.contains('excluded');
+    
+    const action = isExcluded ? 'unexclude' : 'exclude';
+    const endpoint = isExcluded ? '/exclude/unexclude-game' : '/exclude/exclude-game';
+    
+    const payload = {
+        gameName: gameName,
+        appId: appId,
+        reason: isExcluded ? '' : 'Misidentified or incorrect'
+    };
+    
+    fetch(`http://localhost:8080${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (isExcluded) {
+                li.classList.remove('excluded');
+                button.classList.remove('excluded');
+                button.innerHTML = '🚫';
+                button.title = 'Exclude this game';
+                showError(`"${gameName}" has been re-included`);
+            } else {
+                li.classList.add('excluded');
+                button.classList.add('excluded');
+                button.innerHTML = '✓';
+                button.title = 'Include this game';
+                showError(`"${gameName}" has been excluded`);
+                // Remove from display after 1 second
+                setTimeout(() => {
+                    li.style.opacity = '0.5';
+                }, 500);
+            }
+        } else {
+            showError(`Failed to ${action} game: ${data.message}`);
+        }
+    })
+    .catch(err => {
+        showError(`Error ${action}ing game: ${err.message}`);
+    });
+}
+
+function getExcludedGamesList() {
+    fetch('http://localhost:8080/exclude/get-excluded', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Excluded games:', data.excludedGames);
+        }
+    })
+    .catch(err => {
+        console.error('Error fetching excluded games:', err);
+    });
+}

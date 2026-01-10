@@ -4,6 +4,7 @@ const { generateHTMLReport } = require('./reportPage');
 const { getSteamData, validateSteamGames } = require('./services/steamService');
 const { getBackLoggdData } = require('./services/backloggdService');
 const { logInfo, logSuccess, logWarn, logError, logFetch, logCache } = require('./services/logColors');
+const { filterOutExcludedGames } = require('./exclusionManager');
 
 logInfo('Starting BackLoggdSteamPlugin - BLSP...');
 
@@ -73,7 +74,12 @@ async function compareWishlists() {
     // Validate Steam games
     comparison.backLoggdOnly = await validateSteamGames(comparison.backLoggdOnly);
     logInfo(`Validated Backloggd games: ${comparison.backLoggdOnly.length} valid games`);
-    logInfo('Removing duplicates from wishlist comparison...');
+    logInfo('Filtering out excluded games...');
+    // Filter out excluded games from all lists
+    comparison.both = filterOutExcludedGames(comparison.both);
+    comparison.steamOnly = filterOutExcludedGames(comparison.steamOnly);
+    comparison.backLoggdOnly = filterOutExcludedGames(comparison.backLoggdOnly);
+    logInfo('Removal of duplicates from wishlist comparison...');
     // Remove duplicates from the comparison
     const finalizedList = removeDupesFromWishlist(comparison);
     logInfo('Removal of duplicates complete');
