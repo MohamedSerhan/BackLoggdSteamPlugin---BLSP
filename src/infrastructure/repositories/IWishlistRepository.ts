@@ -3,7 +3,7 @@
  * Defines contract for fetching wishlists from different platforms
  */
 
-import { Wishlist, WishlistCollection, WishlistType } from '../../domain/entities/Wishlist';
+import { WishlistCollection, WishlistType } from '../../domain/entities/Wishlist';
 
 export interface IWishlistRepository {
   /**

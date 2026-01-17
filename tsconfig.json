@@ -33,7 +33,8 @@
     "*.js",
     "services/**/*.js",
     "utils/**/*.js",
-    "config/**/*.js"
+    "config/**/*.js",
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules",
