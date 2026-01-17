@@ -1,8 +1,7 @@
 import axios, { AxiosError } from "axios";
-import cheerio from "cheerio";
+import * as cheerio from "cheerio";
 import config from "../config";
-// @ts-ignore
-import { logError, logInfo } from "../../../../services/logColors";
+import { logInfo } from "../../../../services/logColors";
 
 async function scrapeGamePage(username: string, type?: string | undefined, pageIndex?: number | undefined) {
     const referer = `https://${config.baseUrl}/search/users/${username}`;
@@ -17,7 +16,7 @@ async function scrapeGamePage(username: string, type?: string | undefined, pageI
         .catch((err) => err);
 
     if (response instanceof AxiosError) {
-        logInfo(response.response?.status);
+        logInfo(String(response.response?.status));
         let error, status;
         if (response.response?.status === 404) {
         error = "User not found";
@@ -49,11 +48,26 @@ async function getGameInfo(username: string, type?: string | undefined): Promise
         pageIndex++;
         lastGameList = currentGameList;
         const gamePageData:any = await scrapeGamePage(username, type, pageIndex);
+        
+        // Check if the response is an error object
+        if (!gamePageData) {
+            throw new Error(`Failed to fetch game data: No data returned`);
+        }
+        
+        if (gamePageData.error) {
+            throw new Error(`Failed to fetch game data: ${gamePageData.error}`);
+        }
+        
+        // Check if gamePageData is a string (HTML) before loading with cheerio
+        if (typeof gamePageData !== 'string') {
+            throw new Error(`Failed to fetch game data: Expected HTML string, got ${typeof gamePageData}`);
+        }
+        
         const $ = cheerio.load(gamePageData);
         const rawGameList = $(".game-cover > a");
         currentGameList = [];
         for (const game of rawGameList) {
-            const rawGameName = game.attribs.href;
+            const rawGameName = (game as any).attribs.href;
             const gameName = rawGameName
                 .replace(/^\/games\//, '')
                 .replace(/-/g, ' ')

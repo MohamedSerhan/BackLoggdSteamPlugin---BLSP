@@ -4,11 +4,10 @@
     "module": "commonjs",
     "lib": ["es2020"],
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./",
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "removeComments": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -27,19 +26,21 @@
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./src",
-    "paths": {
-      "@/*": ["./*"]
-    }
+    "allowJs": true,
+    "checkJs": false
   },
   "include": [
-    "src/**/*"
+    "*.js",
+    "services/**/*.js",
+    "utils/**/*.js",
+    "config/**/*.js"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts"
+    "api/Backloggd-API",
+    "**/*.test.js",
+    "**/*.spec.js",
+    "cache"
   ]
 }
-  

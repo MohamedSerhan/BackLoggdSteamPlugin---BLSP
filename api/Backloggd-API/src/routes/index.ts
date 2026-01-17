@@ -11,6 +11,6 @@ Route
     .use('/refresh', refresh)
     .use('/exclude', exclusion)
     .use('/', home)
-    .use('*', (req: Request, res: Response) => res.status(404).json({ message: "not found", code: 0 }))
+    .use('*', (_req: Request, res: Response) => res.status(404).json({ message: "not found", code: 0 }))
 
 export default Route;

@@ -2,12 +2,11 @@
 
 import { Router, Request, Response } from "express";
 import { clearCache } from "../lib/cache";
-// @ts-ignore
 import { logError, logInfo } from "../../../../services/logColors";
 
 const Route = Router();
 
-Route.post("/refresh-cache", (req: Request, res: Response) => {
+Route.post("/refresh-cache", (_req: Request, res: Response): void => {
   try {
     logInfo("Clearing cache...");
     clearCache();

@@ -2,8 +2,8 @@
 
 import express, { Request, Response, NextFunction } from "express";
 import routers from "./routes";
-// @ts-ignore
 import { logSuccess } from "../../../services/logColors";
+
 const app = express();
 
 app.set("trust proxy", 1);
@@ -20,7 +20,7 @@ app.use(
   })
 );
 
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((_req: Request, res: Response, next: NextFunction) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, HEAD, POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type");

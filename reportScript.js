@@ -99,21 +99,41 @@ function scrollToSection(id) {
     var el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+/**
+ * Refreshes the cache by calling the API endpoint
+ */
 window.refreshCache = function refreshCache() {
+    const button = event?.target;
+    if (button) {
+        button.disabled = true;
+        button.textContent = 'Refreshing...';
+    }
+
     fetch('http://localhost:8080/refresh/refresh-cache', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.code === 2) {
-            alert('Cache refreshed successfully!');
+            alert('Cache refreshed successfully! Please run the app again to see updated results.');
         } else {
             showError('Failed to refresh cache: ' + (data.message || 'Unknown error'));
         }
     })
     .catch(err => {
-        showError('Failed to refresh cache: ' + err);
+        showError('Failed to refresh cache: ' + err.message + '. Is the API server running?');
+    })
+    .finally(() => {
+        if (button) {
+            button.disabled = false;
+            button.textContent = 'Refresh Cache';
+        }
     });
 }
 function setDarkMode(on) {
@@ -179,26 +199,40 @@ function fixBrokenCapsules() {
 }
 window.addEventListener('DOMContentLoaded', fixBrokenCapsules);
 
-// Game exclusion/tagging functionality
+/**
+ * Toggles game exclusion status
+ * @param {HTMLElement} button - The exclude button element
+ * @param {string} gameName - Name of the game
+ * @param {string|number} appId - Steam app ID
+ */
 function toggleExcludeGame(button, gameName, appId) {
     const li = button.closest('li');
     const isExcluded = li.classList.contains('excluded');
-    
+
     const action = isExcluded ? 'unexclude' : 'exclude';
     const endpoint = isExcluded ? '/exclude/unexclude-game' : '/exclude/exclude-game';
-    
+
     const payload = {
         gameName: gameName,
         appId: appId,
         reason: isExcluded ? '' : 'Misidentified or incorrect'
     };
-    
+
+    // Disable button during request
+    button.disabled = true;
+    const originalHTML = button.innerHTML;
+
     fetch(`http://localhost:8080${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             if (isExcluded) {
@@ -207,38 +241,55 @@ function toggleExcludeGame(button, gameName, appId) {
                 button.innerHTML = '🚫';
                 button.title = 'Exclude this game';
                 showError(`"${gameName}" has been re-included`);
+                li.style.opacity = '1';
             } else {
                 li.classList.add('excluded');
                 button.classList.add('excluded');
                 button.innerHTML = '✓';
                 button.title = 'Include this game';
                 showError(`"${gameName}" has been excluded`);
-                // Remove from display after 1 second
+                // Fade out excluded item
                 setTimeout(() => {
                     li.style.opacity = '0.5';
                 }, 500);
             }
         } else {
-            showError(`Failed to ${action} game: ${data.message}`);
+            showError(`Failed to ${action} game: ${data.message || 'Unknown error'}`);
+            button.innerHTML = originalHTML;
         }
     })
     .catch(err => {
-        showError(`Error ${action}ing game: ${err.message}`);
+        showError(`Error ${action}ing game: ${err.message}. Is the API server running?`);
+        button.innerHTML = originalHTML;
+    })
+    .finally(() => {
+        button.disabled = false;
     });
 }
 
+/**
+ * Fetches and logs the list of excluded games
+ */
 function getExcludedGamesList() {
     fetch('http://localhost:8080/exclude/get-excluded', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             console.log('Excluded games:', data.excludedGames);
+        } else {
+            console.error('Failed to get excluded games:', data.message);
         }
     })
     .catch(err => {
-        console.error('Error fetching excluded games:', err);
+        console.error('Error fetching excluded games:', err.message);
+        showError('Could not fetch excluded games. Is the API server running?');
     });
 }
