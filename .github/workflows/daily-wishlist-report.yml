@@ -50,6 +50,25 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      # Step 3.5: Start the API server
+      - name: Start API Server
+        run: |
+          # Start the API server in the background
+          npm run start:api &
+          API_PID=$!
+          echo "API_PID=$API_PID" >> $GITHUB_ENV
+          
+          # Wait for the API server to start
+          sleep 5
+          
+          # Verify the API server is running
+          if ! kill -0 $API_PID 2>/dev/null; then
+            echo "❌ API server failed to start"
+            exit 1
+          fi
+          
+          echo "✅ API server started successfully"
+
       # Step 4: Run the wishlist comparison script
       - name: Generate Wishlist Report
         env:
@@ -142,7 +161,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 9: Log completion status
+      # Step 9: Stop API server
+      - name: Stop API Server
+        if: always()
+        run: |
+          # Stop the API server if it was started
+          if [ ! -z "$API_PID" ]; then
+            echo "Stopping API server (PID: $API_PID)"
+            kill $API_PID 2>/dev/null || true
+            sleep 2
+            # Force kill if still running
+            kill -9 $API_PID 2>/dev/null || true
+            echo "✅ API server stopped"
+          else
+            echo "ℹ️ No API server to stop"
+          fi
+
+      # Step 10: Log completion status
       - name: Log Completion Status
         run: |
           echo "✅ Wishlist report generation completed successfully!"
