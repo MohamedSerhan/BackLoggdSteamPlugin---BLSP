@@ -1,0 +1,141 @@
+name: Daily Wishlist Report Generation
+
+on:
+  schedule:
+    # Runs at 9:00 AM UTC every day (2:00 AM EST / 3:00 AM EDT)
+    - cron: '0 9 * * *'
+  
+  # Manual trigger: Allows you to run the workflow manually
+  workflow_dispatch:
+  
+  # Allow triggering from other workflows
+  workflow_call:
+
+jobs:
+  generate-wishlist-report:
+    runs-on: ubuntu-latest
+    
+    # Add concurrency to prevent multiple runs at the same time
+    concurrency:
+      group: daily-wishlist-report
+      cancel-in-progress: true
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history for proper commit tracking
+          fetch-depth: 0
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      # Step 3: Install dependencies
+      - name: Install Dependencies
+        run: npm ci
+
+      # Step 4: Run the wishlist comparison script
+      - name: Generate Wishlist Report
+        env:
+          STEAM_ID: ${{ secrets.STEAM_ID }}
+          BACKLOGGD_USERNAME: ${{ secrets.BACKLOGGD_USERNAME }}
+          BACKLOGGD_DOMAIN: ${{ secrets.BACKLOGGD_DOMAIN }}
+        run: |
+          # Run the main script to generate the wishlist report
+          npm start
+          
+          # Verify the report was generated
+          if [ ! -f "wishlistReport.html" ]; then
+            echo "❌ Wishlist report was not generated successfully"
+            exit 1
+          fi
+          
+          echo "✅ Wishlist report generated successfully"
+
+      # Step 5: Upload report as artifact for easy access
+      - name: Upload Wishlist Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: wishlist-report-${{ github.run_number }}
+          path: |
+            wishlistReport.html
+            cache/
+          retention-days: 30
+
+      # Step 6: Create or update GitHub Pages with the latest report
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          destination_dir: reports
+          publish_branch: gh-pages
+          force_orphan: true
+          cname: wishlist-reports.yourdomain.com  # Optional: Replace with your custom domain
+
+      # Step 7: Commit and push updated report to repository
+      - name: Commit Updated Report
+        run: |
+          # Configure git
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Add the updated report and cache
+          git add wishlistReport.html cache/
+          
+          # Check if there are changes to commit
+          if ! git diff --cached --quiet; then
+            # Create a commit with the updated report
+            git commit -m "🤖 Update wishlist report - $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+            
+            # Push to the main branch
+            git push origin HEAD:${{ github.ref_name }}
+            
+            echo "✅ Report committed and pushed successfully"
+          else
+            echo "ℹ️ No changes to commit - report is up to date"
+          fi
+
+      # Step 8: Create GitHub release with the report (optional)
+      - name: Create Release with Report
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: wishlistReport.html
+          tag_name: wishlist-report-$(date +%Y-%m-%d)
+          name: "Wishlist Report - $(date +%Y-%m-%d)"
+          body: |
+            🎮 **Daily Wishlist Comparison Report**
+            
+            This report was automatically generated on $(date +%Y-%m-%d) at $(date +%H:%M:%S UTC).
+            
+            **Report Summary:**
+            - 🎯 Shared Games: Check the "Already on Both Platforms" section
+            - 📥 Backloggd Only: Games only on your Backloggd wishlist
+            - 📤 Steam Only: Games only on your Steam wishlist
+            
+            **How to Access:**
+            - 📄 [View Latest Report](https://github.com/${{ github.repository }}/releases/latest)
+            - 🌐 [GitHub Pages](https://yourusername.github.io/yourrepository/reports/wishlistReport.html) (if configured)
+            - 📦 [Download Artifact](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
+            **Next Update:** Scheduled for tomorrow at 9:00 AM UTC
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 9: Log completion status
+      - name: Log Completion Status
+        run: |
+          echo "✅ Wishlist report generation completed successfully!"
+          echo "📄 Report available at: wishlistReport.html"
+          echo "📦 Artifacts uploaded to GitHub Actions"
+          echo "🌐 GitHub Pages deployment: https://yourusername.github.io/yourrepository/reports/wishlistReport.html"
+          echo "⏰ Next scheduled run: Tomorrow at 9:00 AM UTC"
