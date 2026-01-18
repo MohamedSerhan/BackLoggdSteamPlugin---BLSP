@@ -39,8 +39,8 @@ jobs:
           BACKLOGGD_USERNAME: ${{ secrets.BACKLOGGD_USERNAME }}
           BACKLOGGD_DOMAIN: ${{ secrets.BACKLOGGD_DOMAIN }}
         run: |
-          # Run the main script to generate the wishlist report
-          npm start
+          # Run the wishlist comparison script (exits after completion)
+          npm run generate-report
           
           # Verify the report was generated
           if [ ! -f "wishlistReport.html" ]; then

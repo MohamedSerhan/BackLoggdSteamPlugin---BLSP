@@ -16,6 +16,7 @@
     "dev:legacy": "node utils/delay.js 2000 && nodemon --env-file=.env index.js",
     "start": "npm run build && concurrently \"node api/Backloggd-API/dist/app.js\" \"node utils/keypressRestart.js\"",
     "start:legacy": "npm run build && concurrently \"node api/Backloggd-API/dist/app.js\" \"node utils/delay.js 2000 && node index.js\"",
+    "generate-report": "npm run build && node index.js",
     "start:api": "npm run build && node api/Backloggd-API/dist/app.js",
     "lint": "eslint . --ext .js,.ts",
     "lint:fix": "eslint . --ext .js,.ts --fix",
