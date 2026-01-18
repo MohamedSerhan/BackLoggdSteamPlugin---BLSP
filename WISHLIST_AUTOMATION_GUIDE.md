@@ -133,6 +133,13 @@ cname: wishlist-reports.yourdomain.com  # Replace with your custom domain
 - Check if games are excluded in `excludedGames.json`
 - Verify game names match between platforms
 
+### Cache Issues
+- **Cache is preserved between runs** - The workflow automatically caches game data for 3 months
+- **First run may be slow** - Initial run fetches all game details from Steam API
+- **Subsequent runs are fast** - Cached games load instantly, only new games require API calls
+- **Cache automatically expires** - Old cache files are cleaned up automatically
+- **Cache size** - Game cache is stored in the `cache/` directory and preserved between workflow runs
+
 ## 🔒 Security Notes
 
 - Your Steam and Backloggd credentials are stored securely as GitHub secrets
