@@ -1,10 +1,11 @@
 // Clears all files in the cache directory at the project root
 import * as fs from 'fs';
 import * as path from 'path';
-// @ts-ignore
 import { logWarn, logError } from '../../../../services/logColors';
 
-// Clears all files in the cache directory at the project root
+/**
+ * Clears all files in the cache directory at the project root
+ */
 export function clearCache() {
   try {
     const cacheDir = path.resolve(__dirname, '../../../../cache');

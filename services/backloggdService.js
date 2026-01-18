@@ -1,41 +1,20 @@
 // Backloggd Service: Handles all Backloggd API interactions and caching
-const fs = require('node:fs');
-const path = require('path');
+const { logInfo, logSuccess, logWarn, logError, logFetch } = require('./logColors');
+const { getCache, setCache } = require('../utils/cacheManager');
+const { BACKLOGGD_MAX_RETRIES, BACKLOGGD_RETRY_DELAY_MS } = require('../config/constants');
+
 const BACKLOGGD_DOMAIN = process.env.BACKLOGGD_DOMAIN;
 const BACKLOGGD_USERNAME = process.env.BACKLOGGD_USERNAME;
-const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
-const CACHE_DIR = path.join(__dirname, '..', 'cache');
-const { logInfo, logSuccess, logWarn, logError, logFetch } = require('./logColors');
 
-function ensureCacheDir() {
-    if (!fs.existsSync(CACHE_DIR)) fs.mkdirSync(CACHE_DIR);
-}
-function getCacheFile(key) {
-    return path.join(CACHE_DIR, key + '.json');
-}
-function setCache(key, value, ttl = CACHE_TTL) {
-    ensureCacheDir();
-    const file = getCacheFile(key);
-    const data = { value, expires: Date.now() + ttl };
-    fs.writeFileSync(file, JSON.stringify(data, null, 2));
-}
-function getCache(key) {
-    const file = getCacheFile(key);
-    if (!fs.existsSync(file)) return null;
-    try {
-        const { value, expires } = JSON.parse(fs.readFileSync(file, 'utf8'));
-        if (Date.now() > expires) {
-            fs.unlinkSync(file);
-            return null;
-        }
-        return value;
-    } catch {
-        return null;
-    }
-}
-
-// Helper function to retry fetch
-async function fetchWithRetry(url, options = {}, retries = 2, delay = 1000) {
+/**
+ * Helper function to retry fetch with configurable retries
+ * @param {string} url - URL to fetch
+ * @param {Object} options - Fetch options
+ * @param {number} retries - Number of retries
+ * @param {number} delay - Delay between retries in milliseconds
+ * @returns {Promise<Response>} Fetch response
+ */
+async function fetchWithRetry(url, options = {}, retries = BACKLOGGD_MAX_RETRIES, delay = BACKLOGGD_RETRY_DELAY_MS) {
     let attempt = 0;
     while (attempt <= retries) {
         logFetch(`[fetchWithRetry] Attempt ${attempt + 1} for ${url}`);
@@ -57,48 +36,66 @@ async function fetchWithRetry(url, options = {}, retries = 2, delay = 1000) {
     }
 }
 
+/**
+ * Fetches Backloggd wishlist and backlog data for the configured user
+ * Uses caching to avoid excessive API calls
+ * @returns {Promise<Object>} Object with wishlist and backlog arrays
+ * @throws {Error} If configuration is missing or API call fails
+ */
 async function getBackLoggdData() {
+    if (!BACKLOGGD_USERNAME) {
+        const error = new Error('BACKLOGGD_USERNAME environment variable is not set');
+        logError(error.message);
+        throw error;
+    }
+
+    if (!BACKLOGGD_DOMAIN) {
+        const error = new Error('BACKLOGGD_DOMAIN environment variable is not set');
+        logError(error.message);
+        throw error;
+    }
+
     logInfo('Checking for cached Backloggd data...');
     const cacheKey = `backloggd_${BACKLOGGD_USERNAME}`;
     const cached = getCache(cacheKey);
+
     if (cached) {
         logSuccess(`Found cached Backloggd data for ${BACKLOGGD_USERNAME}`);
-        return cached
-    };
+        return cached;
+    }
+
     const wishlistUrl = `${BACKLOGGD_DOMAIN}/user/${BACKLOGGD_USERNAME}/wishlist`;
     const backlogUrl = `${BACKLOGGD_DOMAIN}/user/${BACKLOGGD_USERNAME}/backlog`;
+
     try {
         logFetch(`Fetching Backloggd data for ${BACKLOGGD_USERNAME}...`);
         const [wishlistResponse, backlogResponse] = await Promise.all([
             fetchWithRetry(wishlistUrl),
             fetchWithRetry(backlogUrl)
         ]);
-        if (!wishlistResponse.ok) throw new Error(`Wishlist HTTP ${wishlistResponse.status}`);
-        if (!backlogResponse.ok) throw new Error(`Backlog HTTP ${backlogResponse.status}`);
+
+        if (!wishlistResponse.ok) {
+            throw new Error(`Wishlist HTTP ${wishlistResponse.status}`);
+        }
+        if (!backlogResponse.ok) {
+            throw new Error(`Backlog HTTP ${backlogResponse.status}`);
+        }
 
         const wishlistJson = await wishlistResponse.json();
-        // List out name of wishlist items
-        wishlistJson.content.forEach(item => {
-            logInfo(`Wishlist Item: ${item}`);
-        });
-        
         const backlogJson = await backlogResponse.json();
-        // List out name of backlog items
-        backlogJson.content.forEach(item => {
-            logInfo(`Backlog Item: ${item}`);
-        });
 
         const result = {
             wishlist: wishlistJson.content || [],
             backlog: backlogJson.content || []
         };
 
-        setCache(cacheKey, result);
         logSuccess(`Fetched Backloggd data for ${BACKLOGGD_USERNAME}: ${result.wishlist.length} wishlist items, ${result.backlog.length} backlog items`);
+        setCache(cacheKey, result);
+
         return result;
     } catch (error) {
         logError('Error fetching Backloggd data: ' + error.message);
-        return { wishlist: [], backlog: [] };
+        throw error;
     }
 }
 

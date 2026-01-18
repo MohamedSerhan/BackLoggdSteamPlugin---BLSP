@@ -1,9 +1,8 @@
-import axios, { Axios, AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import cheerio from "cheerio";
 import config from "../config";
 import { favoriteGames, recentlyPlayed, userInfo } from "../types/game";
 import { extractGame } from "../utils/game";
-// @ts-ignore
 import { logError } from "../../../../services/logColors";
 
 async function getUserInfo(
@@ -48,19 +47,19 @@ async function getUserInfo(
   const recentlyPlayedDiv = $("#profile-journal").children();
   const userStatsDiv = $("#profile-stats").children();
   const userStats: { [key: string]: number } = {};
-  userStatsDiv.each((i, el) => {
+  userStatsDiv.each((_i, el) => {
     const value = $(el).children("h1").text();
     const key = $(el).children("h4").text();
     userStats[key] = parseInt(value);
   });
-  favoritesDiv.each((i, el) => {
+  favoritesDiv.each((_i, el) => {
     const game = extractGame($(el));
     if (game) {
-      const mostFavorite = el.attribs.class.includes("ultimate_fav");
+      const mostFavorite = (el as any).attribs.class.includes("ultimate_fav");
       favoriteGames.push({ ...game, mostFavorite });
     }
   });
-  recentlyPlayedDiv.each((i, el) => {
+  recentlyPlayedDiv.each((_i, el) => {
     const game = extractGame($(el));
     if (game) {
       recentlyPlayed.push({ ...game });

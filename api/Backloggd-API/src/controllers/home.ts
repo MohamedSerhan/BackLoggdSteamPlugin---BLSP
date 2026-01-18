@@ -3,13 +3,13 @@
 import { Router, Request, Response } from "express";
 const Route = Router();
 
-function home(req: Request, res: Response) {
+function home(_req: Request, res: Response): void {
   const response = {
     code:2,
     message:"Unofficial Backloggd API.",
   };
   res.status(200).json(response);
-};
+}
 
 
 Route

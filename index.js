@@ -5,9 +5,16 @@ const { getSteamData, validateSteamGames } = require('./services/steamService');
 const { getBackLoggdData } = require('./services/backloggdService');
 const { logInfo, logSuccess, logWarn, logError, logFetch, logCache } = require('./services/logColors');
 const { filterOutExcludedGames } = require('./exclusionManager');
+const { FUZZY_MATCH_THRESHOLD, FETCH_TIMEOUT_MS } = require('./config/constants');
 
 logInfo('Starting BackLoggdSteamPlugin - BLSP...');
 
+/**
+ * Normalizes game names for consistent comparison
+ * Removes special characters, common edition suffixes, and standardizes formatting
+ * @param {string} name - The game name to normalize
+ * @returns {string} Normalized game name
+ */
 function normalizeGameName(name) {
     return name
         .toLowerCase()
@@ -24,17 +31,30 @@ function normalizeGameName(name) {
         .trim();
 }
 
+/**
+ * Determines if two game names are similar using fuzzy matching
+ * Uses Levenshtein distance with a 20% threshold
+ * @param {string} name1 - First game name
+ * @param {string} name2 - Second game name
+ * @returns {boolean} True if names are similar enough to be considered a match
+ */
 function areNamesSimilar(name1, name2) {
     const normalized1 = normalizeGameName(name1);
     const normalized2 = normalizeGameName(name2);
     const distance = levenshtein.get(normalized1, normalized2);
-    const threshold = Math.max(normalized1.length, normalized2.length) * 0.2;
+    const threshold = Math.max(normalized1.length, normalized2.length) * FUZZY_MATCH_THRESHOLD;
     return distance <= threshold;
 }
 
+/**
+ * Compares wishlists from Steam and Backloggd, categorizing games
+ * @returns {Promise<Object>} Finalized comparison with three categories
+ * @throws {Error} If data fetching or comparison fails
+ */
 async function compareWishlists() {
     // Fetch Steam and Backloggd data
     logInfo('Fetching data from Steam and Backloggd...');
+
     const [steamWishlist, backLoggdData] = await Promise.all([
         getSteamData(),
         getBackLoggdData()
@@ -86,13 +106,18 @@ async function compareWishlists() {
     return finalizedList
 }
 
+/**
+ * Removes duplicate entries from wishlist comparison results
+ * @param {Object} wishlistComparison - Object with both, steamOnly, backLoggdOnly arrays
+ * @returns {Object} De-duplicated comparison with user-friendly category names
+ */
 function removeDupesFromWishlist(wishlistComparison) {
     let { both, steamOnly, backLoggdOnly } = wishlistComparison;
-    
+
     return {
         'Add to BackLoggd Wishlist': [...new Set(steamOnly)],
         'Add to Steam Wishlist': [...new Set(backLoggdOnly)],
-        'Already on Both': [...new Set(both.map(game => 
+        'Already on Both': [...new Set(both.map(game =>
             typeof game === 'object' ? game : { steamName: game, appId: null }
         ))],
     };
@@ -103,5 +128,10 @@ compareWishlists()
     .then(data => {
         // Generate the HTML report
         generateHTMLReport(data);
+        logSuccess('Report generated successfully!');
     })
-    .catch(error => logError('Error with report: ' + error.message));
+    .catch(error => {
+        logError('Error with report: ' + error.message);
+        logError('Stack trace:', error.stack);
+        process.exit(1);
+    });
