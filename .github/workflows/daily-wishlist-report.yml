@@ -52,22 +52,37 @@ jobs:
 
       # Step 3.5: Start the API server
       - name: Start API Server
+        env:
+          STEAM_ID: ${{ secrets.STEAM_ID }}
+          BACKLOGGD_USERNAME: ${{ secrets.BACKLOGGD_USERNAME }}
+          BACKLOGGD_DOMAIN: ${{ secrets.BACKLOGGD_DOMAIN }}
         run: |
+          # Create .env file for API server
+          echo "BACKLOGGD_USERNAME=${{ secrets.BACKLOGGD_USERNAME }}" > .env
+          echo "BACKLOGGD_DOMAIN=http://127.0.0.1:8080" >> .env
+          
           # Start the API server in the background
           npm run start:api &
           API_PID=$!
           echo "API_PID=$API_PID" >> $GITHUB_ENV
           
           # Wait for the API server to start
-          sleep 5
+          sleep 10
           
-          # Verify the API server is running
+          # Verify the API server is running and responding
           if ! kill -0 $API_PID 2>/dev/null; then
             echo "❌ API server failed to start"
             exit 1
           fi
           
-          echo "✅ API server started successfully"
+          # Test if the API server is actually responding
+          if ! curl -s http://127.0.0.1:8080 > /dev/null; then
+            echo "❌ API server is running but not responding"
+            kill $API_PID 2>/dev/null || true
+            exit 1
+          fi
+          
+          echo "✅ API server started successfully and is responding"
 
       # Step 4: Run the wishlist comparison script
       - name: Generate Wishlist Report
