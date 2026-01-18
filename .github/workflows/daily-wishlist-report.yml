@@ -60,24 +60,62 @@ jobs:
           # Create .env file for API server
           echo "BACKLOGGD_USERNAME=${{ secrets.BACKLOGGD_USERNAME }}" > .env
           echo "BACKLOGGD_DOMAIN=http://127.0.0.1:8080" >> .env
+          echo "NODE_ENV=production" >> .env
+          
+          # Debug: Show environment variables
+          echo "=== Environment Variables ==="
+          echo "BACKLOGGD_USERNAME: ${{ secrets.BACKLOGGD_USERNAME }}"
+          echo "BACKLOGGD_DOMAIN: ${{ secrets.BACKLOGGD_DOMAIN }}"
+          echo "STEAM_ID: ${{ secrets.STEAM_ID }}"
+          echo "=== End Environment Variables ==="
+          
+          # Debug: Check if .env file was created
+          echo "=== .env file contents ==="
+          cat .env
+          echo "=== End .env file ==="
+          
+          # Debug: Check if API server files exist
+          echo "=== Checking API server files ==="
+          ls -la api/Backloggd-API/
+          ls -la api/Backloggd-API/dist/
+          echo "=== End API server files ==="
           
           # Start the API server in the background
+          echo "Starting API server..."
           npm run start:api &
           API_PID=$!
           echo "API_PID=$API_PID" >> $GITHUB_ENV
           
-          # Wait for the API server to start
-          sleep 10
+          # Debug: Check if process started
+          echo "API server started with PID: $API_PID"
+          ps aux | grep -i node
           
-          # Verify the API server is running and responding
-          if ! kill -0 $API_PID 2>/dev/null; then
-            echo "❌ API server failed to start"
+          # Wait for the API server to start
+          echo "Waiting for API server to start..."
+          sleep 15
+          
+          # Debug: Check if process is still running
+          echo "Checking if API server is still running..."
+          if kill -0 $API_PID 2>/dev/null; then
+            echo "✅ API server process is running"
+          else
+            echo "❌ API server process died"
+            # Check for error logs
+            echo "=== Checking for error logs ==="
+            tail -20 npm-debug.log || echo "No npm-debug.log found"
+            echo "=== End error logs ==="
             exit 1
           fi
           
           # Test if the API server is actually responding
-          if ! curl -s http://127.0.0.1:8080 > /dev/null; then
-            echo "❌ API server is running but not responding"
+          echo "Testing API server response..."
+          if curl -s http://127.0.0.1:8080 > /dev/null; then
+            echo "✅ API server is responding"
+          else
+            echo "❌ API server is not responding"
+            echo "=== Testing port 8080 ==="
+            netstat -tlnp | grep :8080 || echo "Port 8080 not listening"
+            echo "=== End port test ==="
             kill $API_PID 2>/dev/null || true
             exit 1
           fi
