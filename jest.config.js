@@ -2,13 +2,13 @@ module.exports = {
     testEnvironment: 'node',
     coverageDirectory: 'coverage',
     collectCoverageFrom: [
-        '**/*.{js,ts}',
+        'src/**/*.{js,ts}',
+        '!src/**/*.d.ts',
+        '!src/main.ts',
         '!**/node_modules/**',
         '!**/dist/**',
         '!**/coverage/**',
         '!**/cache/**',
-        '!jest.config.js',
-        '!.eslintrc.js',
     ],
     testMatch: [
         '**/__tests__/**/*.[jt]s?(x)',
@@ -19,9 +19,29 @@ module.exports = {
         '/dist/',
         '/cache/',
     ],
+    preset: 'ts-jest',
     transform: {
         '^.+\\.ts$': 'ts-jest',
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+    },
+    globals: {
+        'ts-jest': {
+            tsconfig: {
+                esModuleInterop: true,
+                allowSyntheticDefaultImports: true,
+            },
+        },
+    },
+    coverageThreshold: {
+        global: {
+            branches: 80,
+            functions: 80,
+            lines: 80,
+            statements: 80,
+        },
+    },
     verbose: true,
 };

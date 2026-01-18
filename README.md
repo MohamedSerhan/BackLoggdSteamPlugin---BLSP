@@ -102,12 +102,26 @@ This will:
 3. Compare wishlists and generate an HTML report
 4. Output `wishlistReport.html` in the project root
 
+**Manual Restart**: While running, type `rs` and press Enter to re-run the comparison without restarting the entire process.
+
+```bash
+# In the terminal where npm start is running:
+rs <Enter>
+```
+
 ### Development Mode
 
 For development with auto-reload:
 
 ```bash
 npm run dev
+```
+
+**Manual Restart**: While nodemon is running, type `rs` and press Enter to manually restart the app without exiting nodemon. This is useful when you want to re-run the comparison without making code changes.
+
+```bash
+# In the terminal where nodemon is running:
+rs <Enter>
 ```
 
 ### Other Commands

@@ -22,12 +22,14 @@ export class WishlistService {
    * @param steamId - Steam user ID
    * @param backloggdUsername - Backloggd username
    * @param excludedAppIds - Optional array of app IDs to exclude
+   * @param excludedNames - Optional array of game names to exclude
    * @param fuzzyMatchThreshold - Optional fuzzy match threshold (default 0.2)
    */
   async compareWishlists(
     steamId: string,
     backloggdUsername: string,
     excludedAppIds?: number[],
+    excludedNames?: string[],
     fuzzyMatchThreshold?: number
   ): Promise<CompareWishlistsOutput> {
     try {
@@ -47,6 +49,7 @@ export class WishlistService {
         firstWishlist: steamWishlist,
         secondWishlist: backloggdWishlist,
         excludedAppIds,
+        excludedNames,
         fuzzyMatchThreshold
       });
       

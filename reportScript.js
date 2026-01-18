@@ -240,17 +240,19 @@ function toggleExcludeGame(button, gameName, appId) {
                 button.classList.remove('excluded');
                 button.innerHTML = '🚫';
                 button.title = 'Exclude this game';
-                showError(`"${gameName}" has been re-included`);
+                showError(`"${gameName}" has been re-included. Refresh the page to see it.`);
+                li.style.display = '';
                 li.style.opacity = '1';
             } else {
                 li.classList.add('excluded');
                 button.classList.add('excluded');
                 button.innerHTML = '✓';
                 button.title = 'Include this game';
-                showError(`"${gameName}" has been excluded`);
-                // Fade out excluded item
+                showError(`"${gameName}" has been excluded and will be hidden`);
+                // Fade out then completely hide excluded item
+                li.style.opacity = '0';
                 setTimeout(() => {
-                    li.style.opacity = '0.5';
+                    li.style.display = 'none';
                 }, 500);
             }
         } else {

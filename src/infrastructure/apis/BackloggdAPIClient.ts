@@ -109,23 +109,33 @@ export class BackloggdAPIClient {
   
   /**
    * Converts Backloggd API response games to domain entities
-   * @param backloggdGames - Raw game data from Backloggd API
+   * @param backloggdGames - Raw game data from Backloggd API (array of strings or objects)
    */
   private convertBackloggdGamesToEntities(backloggdGames: any[]): Game[] {
     return backloggdGames
       .map((game: any) => {
         try {
-          // Backloggd games have 'name' field
-          // They may or may not have Steam app ID
-          const gameName = game.name || game.title || '';
-          const steamAppId = game.steamAppId || game.appId || 0;
+          // Backloggd API returns simple string array of game names
+          // e.g., ["Black Myth Wukong", "Elden Ring", ...]
+          let gameName: string;
           
-          if (!gameName) {
+          if (typeof game === 'string') {
+            // Direct string (current API format)
+            gameName = game;
+          } else if (typeof game === 'object') {
+            // Object format (for backwards compatibility)
+            gameName = game.name || game.title || '';
+          } else {
+            gameName = '';
+          }
+          
+          if (!gameName || gameName.trim() === '') {
             console.warn('Skipping Backloggd game with no name:', game);
             return null;
           }
           
-          return GameFactory.createFromBackloggd(gameName, steamAppId || undefined);
+          // Backloggd API doesn't provide Steam app IDs
+          return GameFactory.createFromBackloggd(gameName.trim());
         } catch (error) {
           console.error(`Error converting Backloggd game:`, error, game);
           return null;

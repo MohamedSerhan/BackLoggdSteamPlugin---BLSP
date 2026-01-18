@@ -11,6 +11,7 @@ export interface CompareWishlistsInput {
   firstWishlist: WishlistCollection;
   secondWishlist: WishlistCollection;
   excludedAppIds?: number[];
+  excludedNames?: string[];
   fuzzyMatchThreshold?: number;
 }
 
@@ -40,12 +41,12 @@ export class CompareWishlistsUseCase {
   ) {}
   
   execute(input: CompareWishlistsInput): CompareWishlistsOutput {
-    const { firstWishlist, secondWishlist, excludedAppIds = [], fuzzyMatchThreshold } = input;
+    const { firstWishlist, secondWishlist, excludedAppIds = [], excludedNames = [], fuzzyMatchThreshold } = input;
     const threshold = fuzzyMatchThreshold ?? this.fuzzyMatchThreshold;
     
     // Step 1: Filter out excluded games
-    const filteredFirst = this.filterExcluded(firstWishlist, excludedAppIds);
-    const filteredSecond = this.filterExcluded(secondWishlist, excludedAppIds);
+    const filteredFirst = this.filterExcluded(firstWishlist, excludedAppIds, excludedNames);
+    const filteredSecond = this.filterExcluded(secondWishlist, excludedAppIds, excludedNames);
     
     // Step 2: Find matches using fuzzy name matching
     const { inBoth, onlyInFirst, onlyInSecond } = this.compareWishlists(
@@ -82,13 +83,32 @@ export class CompareWishlistsUseCase {
   
   private filterExcluded(
     wishlist: WishlistCollection,
-    excludedAppIds: number[]
+    excludedAppIds: number[],
+    excludedNames: string[]
   ): WishlistCollection {
-    if (excludedAppIds.length === 0) {
+    if (excludedAppIds.length === 0 && excludedNames.length === 0) {
       return wishlist;
     }
     
-    return wishlist.filter(game => !excludedAppIds.includes(game.appId));
+    // Normalize excluded names for comparison
+    const normalizedExcludedNames = new Set(
+      excludedNames.map(name => new GameName(name).normalizedValue)
+    );
+    
+    return wishlist.filter(game => {
+      // Filter by appId for games with valid appIds (Steam games)
+      if (game.appId && game.appId > 0 && excludedAppIds.includes(game.appId)) {
+        return false;
+      }
+      
+      // Filter by normalized name (works for both Steam and Backloggd games)
+      const gameName = new GameName(game.name);
+      if (normalizedExcludedNames.has(gameName.normalizedValue)) {
+        return false;
+      }
+      
+      return true;
+    });
   }
   
   private compareWishlists(
@@ -102,7 +122,7 @@ export class CompareWishlistsUseCase {
   } {
     const inBoth: Game[] = [];
     const onlyInFirst: Game[] = [];
-    const matchedSecondIds = new Set<number>();
+    const matchedSecondNames = new Set<string>();
     
     // Find games in first that match or don't match in second
     for (const firstGame of first.items) {
@@ -114,7 +134,8 @@ export class CompareWishlistsUseCase {
         
         if (firstGameName.isSimilarTo(secondGameName, threshold)) {
           inBoth.push(firstGame);
-          matchedSecondIds.add(secondGame.appId);
+          // Use normalized name as key instead of appId (fixes appId=0 collision bug)
+          matchedSecondNames.add(secondGameName.normalizedValue);
           foundMatch = true;
           break;
         }
@@ -126,9 +147,11 @@ export class CompareWishlistsUseCase {
     }
     
     // Find games only in second (not matched)
-    const onlyInSecond = second.items.filter(
-      game => !matchedSecondIds.has(game.appId)
-    );
+    // Use normalized name instead of appId for matching
+    const onlyInSecond = second.items.filter(game => {
+      const gameName = new GameName(game.name);
+      return !matchedSecondNames.has(gameName.normalizedValue);
+    });
     
     return {
       inBoth,
@@ -138,11 +161,15 @@ export class CompareWishlistsUseCase {
   }
   
   private removeDuplicates(games: Game[]): Game[] {
-    const uniqueGames = new Map<number, Game>();
+    const uniqueGames = new Map<string, Game>();
     
     for (const game of games) {
-      if (!uniqueGames.has(game.appId)) {
-        uniqueGames.set(game.appId, game);
+      // Use normalized name as key to avoid appId=0 collisions
+      const gameName = new GameName(game.name);
+      const key = gameName.normalizedValue;
+      
+      if (!uniqueGames.has(key)) {
+        uniqueGames.set(key, game);
       }
     }
     
