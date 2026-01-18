@@ -1,4 +1,5 @@
 // Backloggd Service: Handles all Backloggd API interactions and caching
+const axios = require('axios');
 const { logInfo, logSuccess, logWarn, logError, logFetch } = require('./logColors');
 const { getCache, setCache } = require('../utils/cacheManager');
 const { BACKLOGGD_MAX_RETRIES, BACKLOGGD_RETRY_DELAY_MS } = require('../config/constants');
@@ -7,20 +8,27 @@ const BACKLOGGD_DOMAIN = process.env.BACKLOGGD_DOMAIN;
 const BACKLOGGD_USERNAME = process.env.BACKLOGGD_USERNAME;
 
 /**
- * Helper function to retry fetch with configurable retries
+ * Helper function to retry axios requests with configurable retries
  * @param {string} url - URL to fetch
- * @param {Object} options - Fetch options
+ * @param {Object} config - Axios config options
  * @param {number} retries - Number of retries
  * @param {number} delay - Delay between retries in milliseconds
- * @returns {Promise<Response>} Fetch response
+ * @returns {Promise<Object>} Axios response object
  */
-async function fetchWithRetry(url, options = {}, retries = BACKLOGGD_MAX_RETRIES, delay = BACKLOGGD_RETRY_DELAY_MS) {
+async function fetchWithRetry(url, config = {}, retries = BACKLOGGD_MAX_RETRIES, delay = BACKLOGGD_RETRY_DELAY_MS) {
     let attempt = 0;
     while (attempt <= retries) {
         logFetch(`[fetchWithRetry] Attempt ${attempt + 1} for ${url}`);
         try {
-            const response = await fetch(url, options);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const response = await axios.get(url, {
+                ...config,
+                timeout: 30000, // 30 second timeout
+                headers: {
+                    'User-Agent': 'BackLoggdSteamPlugin/1.0.0',
+                    'Accept': 'application/json',
+                    ...config.headers
+                }
+            });
             logSuccess(`[fetchWithRetry] Success on attempt ${attempt + 1} for ${url}`);
             return response;
         } catch (err) {
@@ -74,15 +82,15 @@ async function getBackLoggdData() {
             fetchWithRetry(backlogUrl)
         ]);
 
-        if (!wishlistResponse.ok) {
+        if (wishlistResponse.status !== 200) {
             throw new Error(`Wishlist HTTP ${wishlistResponse.status}`);
         }
-        if (!backlogResponse.ok) {
+        if (backlogResponse.status !== 200) {
             throw new Error(`Backlog HTTP ${backlogResponse.status}`);
         }
 
-        const wishlistJson = await wishlistResponse.json();
-        const backlogJson = await backlogResponse.json();
+        const wishlistJson = wishlistResponse.data;
+        const backlogJson = backlogResponse.data;
 
         const result = {
             wishlist: wishlistJson.content || [],
