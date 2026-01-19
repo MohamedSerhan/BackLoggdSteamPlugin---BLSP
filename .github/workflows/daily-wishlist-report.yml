@@ -50,7 +50,11 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      # Step 3.5: Start the API server
+      # Step 3.5: Build the API server
+      - name: Build API Server
+        run: npm run build:api
+
+      # Step 3.6: Start the API server
       - name: Start API Server
         env:
           STEAM_ID: ${{ secrets.STEAM_ID }}
